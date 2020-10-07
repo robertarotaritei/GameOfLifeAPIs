@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveGamesAPI.Hubs;
+using ActiveGamesAPI.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,7 +27,9 @@ namespace ActiveGamesAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
             services.AddControllers();
+            services.AddTransient<IGameProgressBroadcaster, SignalRGameProgressBroadcaster>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,6 +42,15 @@ namespace ActiveGamesAPI
 
             app.UseHttpsRedirection();
 
+            app.UseCors(builder =>
+            {
+                builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowCredentials();
+            });
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -45,6 +58,7 @@ namespace ActiveGamesAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<GameProgressHub>("/Progress");
             });
         }
     }
