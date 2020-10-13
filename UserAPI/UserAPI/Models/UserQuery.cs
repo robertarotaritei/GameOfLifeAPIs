@@ -29,7 +29,7 @@ namespace UserAPI.Models
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<int> VerifyOneAsync(string username, string password)
+        public async Task<User> VerifyOneAsync(string username, string password)
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = @"SELECT * FROM `user` WHERE `user_name` = @username AND `password` = @password";
@@ -46,7 +46,21 @@ namespace UserAPI.Models
                 Value = password,
             });
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
-            return result.Count > 0 ? result[0].Id : 0;
+            return result.Count > 0 ? result[0] : null;
+        }
+
+        public async Task<User> VerifyUsernameAsync(string username)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = @"SELECT * FROM `user` WHERE `user_name` = @username;";
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@username",
+                DbType = DbType.String,
+                Value = username,
+            });
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            return result.Count > 0 ? result[0] : null;
         }
 
         private async Task<List<User>> ReadAllAsync(DbDataReader reader)

@@ -28,7 +28,7 @@ namespace UserAPI.Controllers
             return new OkObjectResult(result);
         }
 
-        // GET user/verify?username=username&password=password
+        // GET user/verify?username=bob&password=1234
         [HttpGet]
         [Route("verify")]
         public async Task<IActionResult> VerifyOne(string username, string password)
@@ -36,7 +36,21 @@ namespace UserAPI.Controllers
             await Db.Connection.OpenAsync();
             var query = new UserQuery(Db);
             var result = await query.VerifyOneAsync(username, password);
-            if (result is 0)
+            if (result is null)
+                return new NotFoundResult();
+
+            return new OkObjectResult(result);
+        }
+
+        // GET user/verifyusername?username=bob
+        [HttpGet]
+        [Route("verifyusername")]
+        public async Task<IActionResult> VerifyUsername(string username)
+        {
+            await Db.Connection.OpenAsync();
+            var query = new UserQuery(Db);
+            var result = await query.VerifyUsernameAsync(username);
+            if (result is null)
                 return new NotFoundResult();
 
             return new OkObjectResult(result);
