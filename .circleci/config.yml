@@ -99,7 +99,7 @@ workflows:
               only: master
           requires:
             - build-game-history-api
-      - build-auser-api:
+      - build-user-api:
           filters:
             branches:
               only: master
