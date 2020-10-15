@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using UserAPI.Infrastructure;
 using UserAPI.Models;
 
 namespace UserAPI.Controllers
@@ -8,34 +9,30 @@ namespace UserAPI.Controllers
     [Route("[controller]")]
     public class UserController
     {
-        public AppDb Db { get; }
+        public IUserQuery _userQuery { get; }
 
-        public UserController(AppDb db)
-        {
-            Db = db;
+        public UserController(IUserQuery userQuery)
+        { 
+            _userQuery = userQuery;
         }
 
         // GET user/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
-            await Db.Connection.OpenAsync();
-            var query = new UserQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await _userQuery.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();
 
             return new OkObjectResult(result);
         }
-
+        
         // GET user/verify?username=bob&password=1234
         [HttpGet]
         [Route("verify")]
         public async Task<IActionResult> VerifyOne(string username, string password)
         {
-            await Db.Connection.OpenAsync();
-            var query = new UserQuery(Db);
-            var result = await query.VerifyOneAsync(username, password);
+            var result = await _userQuery.VerifyOneAsync(username, password);
             if (result is null)
                 return new NotFoundResult();
 
@@ -47,9 +44,7 @@ namespace UserAPI.Controllers
         [Route("verifyusername")]
         public async Task<IActionResult> VerifyUsername(string username)
         {
-            await Db.Connection.OpenAsync();
-            var query = new UserQuery(Db);
-            var result = await query.VerifyUsernameAsync(username);
+            var result = await _userQuery.VerifyUsernameAsync(username);
             if (result is null)
                 return new NotFoundResult();
 
@@ -61,9 +56,7 @@ namespace UserAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User body)
         {
-            await Db.Connection.OpenAsync();
-            body.Db = Db;
-            await body.InsertAsync();
+            await _userQuery.InsertAsync(body);
             return new OkObjectResult(body);
         }
 
@@ -71,13 +64,7 @@ namespace UserAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOne(int id, [FromBody] string password)
         {
-            await Db.Connection.OpenAsync();
-            var query = new UserQuery(Db);
-            var result = await query.FindOneAsync(id);
-            if (result is null)
-                return new NotFoundResult();
-            result.Password = password;
-            await result.UpdateAsync();
+            var result = await _userQuery.UpdateAsync(id, password);
             return new OkObjectResult(result);
         }
 
@@ -85,13 +72,8 @@ namespace UserAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOne(int id)
         {
-            await Db.Connection.OpenAsync();
-            var query = new UserQuery(Db);
-            var result = await query.FindOneAsync(id);
-            if (result is null)
-                return new NotFoundResult();
-            await result.DeleteAsync();
-            return new OkResult();
+            var result = await _userQuery.DeleteAsync(id);
+            return new OkObjectResult(result);
         }
     }
 }

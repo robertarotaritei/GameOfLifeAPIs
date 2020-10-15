@@ -13,5 +13,6 @@ namespace UserAPI
         }
 
         public void Dispose() => Connection.Dispose();
+
     }
 }

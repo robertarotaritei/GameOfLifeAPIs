@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using UserAPI.Infrastructure;
+using UserAPI.Models;
 
 namespace UserAPI
 {
@@ -37,7 +39,7 @@ namespace UserAPI
             });
 
             services.AddControllers();
-            services.AddTransient<AppDb>(_ => new AppDb(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddTransient<IUserQuery, UserQuery>(_ => new UserQuery(Configuration["ConnectionStrings:DefaultConnection"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

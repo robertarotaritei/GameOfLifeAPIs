@@ -1,0 +1,111 @@
+version: 2.1
+
+orbs:
+  windows: circleci/windows@2.2.0
+
+jobs:
+  build-active-games-api:
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
+      - run: cd ActiveGamesAPI; dotnet.exe restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csprojj" }}
+      - run: cd ActiveGamesAPI; dotnet.exe build --configuration Release
+      - store_artifacts:
+          path: C:\Users\circleci\project
+  test-active-games-api:
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - run: cd ActiveGamesAPI; dotnet.exe test -v n --results-directory:test_results --collect:"Code Coverage"
+      - store_test_results:
+          path: C:\Users\circleci\project\test_results
+  build-game-history-api:
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csproj" }}
+      - run: cd GameHistoryAPI; dotnet.exe restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csprojj" }}
+      - run: cd GameHistoryAPI; dotnet.exe build --configuration Release
+      - store_artifacts:
+          path: C:\Users\circleci\project
+  test-game-history-api:
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - run: cd GameHistoryAPI; dotnet.exe test -v n --results-directory:test_results --collect:"Code Coverage"
+      - store_test_results:
+          path: C:\Users\circleci\project\test_results
+  build-user-api:
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csproj" }}
+      - run: cd UserAPI; dotnet.exe restore
+      - save_cache:
+          paths:
+            - C:\Users\circleci\.nuget\packages
+          key: dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csprojj" }}
+      - run: cd UserAPI; dotnet.exe build --configuration Release
+      - store_artifacts:
+          path: C:\Users\circleci\project
+  test-user-api:
+    executor:
+      name: windows/default
+    steps:
+      - checkout
+      - run: cd UserAPI; dotnet.exe test -v n --results-directory:test_results --collect:"Code Coverage"
+      - store_test_results:
+          path: C:\Users\circleci\project\test_results
+workflows:
+  build_and_test:
+    jobs:
+      - build-active-games-api:
+          filters:
+            branches:
+              only: master
+      - test-active-games-api:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-active-games-api
+      - build-game-history-api:
+          filters:
+            branches:
+              only: master
+      - test-game-history-api:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-game-history-api
+      - build-auser-api:
+          filters:
+            branches:
+              only: master
+      - test-user-api:
+          filters:
+            branches:
+              only: master
+          requires:
+            - build-user-api
