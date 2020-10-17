@@ -11,12 +11,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI.csproj" }}
+            - dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
       - run: cd ActiveGamesAPI; dotnet.exe restore
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI.csprojj" }}
+          key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
       - run: cd ActiveGamesAPI; dotnet.exe build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
@@ -40,7 +40,7 @@ jobs:
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csprojj" }}
+          key: dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csproj" }}
       - run: cd GameHistoryAPI; dotnet.exe build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
@@ -64,7 +64,7 @@ jobs:
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csprojj" }}
+          key: dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csproj" }}
       - run: cd UserAPI; dotnet.exe build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
