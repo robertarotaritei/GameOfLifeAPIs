@@ -11,12 +11,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
+            - dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI.csproj" }}
       - run: cd ActiveGamesAPI; dotnet.exe restore
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
-          key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csprojj" }}
+          key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI.csprojj" }}
       - run: cd ActiveGamesAPI; dotnet.exe build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
