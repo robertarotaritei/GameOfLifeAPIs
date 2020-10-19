@@ -6,7 +6,7 @@ using UserAPI.Models;
 namespace UserAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("credentials/[controller]")]
     public class UserController
     {
         public IUserQuery _userQuery { get; }

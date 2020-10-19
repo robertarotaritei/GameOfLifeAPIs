@@ -15,7 +15,9 @@ namespace ActiveGamesAPI.Tests
         {
             //Arrange
             var id = 2;
-            var generation = new bool[2, 2] { { true, false }, { false, false } };
+            var generation = new bool[2][];
+            generation[0] = new bool[2] { true, false };
+            generation[1] = new bool[2] { false, false };
             var gameState = new GameState()
             {
                 IsFinal = false,
@@ -42,7 +44,9 @@ namespace ActiveGamesAPI.Tests
         {
             //Arrange
             var id = 2;
-            var generation = new bool[2, 2] { { true, false }, { false, false } };
+            var generation = new bool[2][];
+            generation[0] = new bool[2] { true, false };
+            generation[1] = new bool[2] { false, false };
             var gameState = new GameState()
             {
                 IsFinal = false,

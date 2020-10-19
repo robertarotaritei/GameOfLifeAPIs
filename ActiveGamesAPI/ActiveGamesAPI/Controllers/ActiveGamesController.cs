@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ActiveGamesAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("games/[controller]")]
     public class ActiveGamesController
     {
         private readonly IGameProgressBroadcaster _gameProgressBroadcaster;

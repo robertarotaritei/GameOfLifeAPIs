@@ -12,7 +12,7 @@ namespace ActiveGamesAPI.Infrastructure
     {
         private async Task<HubConnection> OpenConnectionAsync()
         {
-            var connection = new HubConnectionBuilder().WithUrl("http://localhost:56061/Progress").Build();
+            var connection = new HubConnectionBuilder().WithUrl("http://localhost:3002/Progress").Build();
             await connection.StartAsync();
 
             return connection;
