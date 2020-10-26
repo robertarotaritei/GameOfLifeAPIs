@@ -19,18 +19,19 @@ namespace ActiveGamesAPI.Controllers
             _gameProgressBroadcaster = gameProgressBroadcaster;
         }
 
-        [HttpPost("{id}")]
-        public async Task<IActionResult> UpdateGame(int id, GameState currentState)
+        [HttpPost]
+        [Route("update")]
+        public async Task<IActionResult> UpdateGame(bool[][] currentState)
         {
-            await _gameProgressBroadcaster.UpdateGameAsync(id, currentState);
+            await _gameProgressBroadcaster.UpdateGameAsync(currentState);
 
             return new OkObjectResult(currentState);
         }
 
         [HttpPost]
-        public async Task<IActionResult> RunGame(int id, GameState initialState)
+        public async Task<IActionResult> RunGame(GameState initialState)
         {
-            await _gameProgressBroadcaster.RunGameAsync(id, initialState);
+            await _gameProgressBroadcaster.RunGameAsync(initialState);
 
             return new OkObjectResult(initialState);
         }

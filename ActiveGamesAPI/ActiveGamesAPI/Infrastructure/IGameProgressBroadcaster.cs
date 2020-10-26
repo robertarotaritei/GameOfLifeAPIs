@@ -8,8 +8,8 @@ namespace ActiveGamesAPI.Infrastructure
 {
     public interface IGameProgressBroadcaster
     {
-        Task UpdateGameAsync(int gameId, GameState currentState);
+        Task UpdateGameAsync(bool[][] currentState);
 
-        Task RunGameAsync(int gameId, GameState intialState);
+        Task RunGameAsync(GameState intialState);
     }
 }

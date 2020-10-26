@@ -1,34 +1,54 @@
 ﻿using GameHistoryAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Data;
+using GameHistoryAPI.Infrastructure;
 
 namespace GameHistoryAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("history/[controller]")]
     public class GameHistoryController
     {
-        public AppDb Db { get; }
+        public IHistoryQuery _historyQuery { get; }
 
-        public GameHistoryController(AppDb db)
+        public GameHistoryController(IHistoryQuery historyQuery)
         {
-            Db = db;
+            _historyQuery = historyQuery;
         }
 
-        // POST gamehistory
+        // GET history/gamehistory/5
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOne(int id)
+        {
+            var result = await _historyQuery.FindOneAsync(id);
+            if (result is null)
+                return new NotFoundResult();
+
+            return new OkObjectResult(result);
+        }
+
+        // POST "history/gamehistory
         [HttpPost]
-        public async Task<IActionResult> Post(Game body)
-        {            
-            await Db.Connection.OpenAsync();
-            body.Db = Db;
-            await body.InsertAsync();
+        public async Task<IActionResult> Post([FromBody] Game body)
+        {
+            await _historyQuery.InsertAsync(body);
             return new OkObjectResult(body);
+        }
+
+        // PUT "history/gamehistory/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutOne(int id, [FromBody] Game body)
+        {
+            var result = await _historyQuery.UpdateAsync(id, body);
+            return new OkObjectResult(result);
+        }
+
+        // DELETE "history/gamehistory/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOne(int id)
+        {
+            var result = await _historyQuery.DeleteAsync(id);
+            return new OkObjectResult(result);
         }
 
     }

@@ -16,7 +16,7 @@ namespace UserAPI.Controllers
             _userQuery = userQuery;
         }
 
-        // GET user/5
+        // GET credentials/user/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
@@ -26,8 +26,8 @@ namespace UserAPI.Controllers
 
             return new OkObjectResult(result);
         }
-        
-        // GET user/verify?username=bob&password=1234
+
+        // GET credentials/user/verify?username=bob&password=1234
         [HttpGet]
         [Route("verify")]
         public async Task<IActionResult> VerifyOne(string username, string password)
@@ -39,7 +39,7 @@ namespace UserAPI.Controllers
             return new OkObjectResult(result);
         }
 
-        // GET user/verifyusername?username=bob
+        // GET credentials/user/verifyusername?username=bob
         [HttpGet]
         [Route("verifyusername")]
         public async Task<IActionResult> VerifyUsername(string username)
@@ -52,7 +52,7 @@ namespace UserAPI.Controllers
         }
 
 
-        // POST user
+        // POST credentials/user
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User body)
         {
@@ -60,7 +60,7 @@ namespace UserAPI.Controllers
             return new OkObjectResult(body);
         }
 
-        // PUT user/5
+        // PUT credentials/user/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOne(int id, [FromBody] string password)
         {
@@ -68,7 +68,7 @@ namespace UserAPI.Controllers
             return new OkObjectResult(result);
         }
 
-        // DELETE user/5
+        // DELETE credentials/user/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOne(int id)
         {

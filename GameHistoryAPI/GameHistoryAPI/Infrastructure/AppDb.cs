@@ -13,5 +13,6 @@ namespace GameHistoryAPI
         }
 
         public void Dispose() => Connection.Dispose();
+
     }
 }

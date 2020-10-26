@@ -7,10 +7,7 @@ namespace ActiveGamesAPI.Models
 {
     public class GameState
     {
-        public bool IsFinal { get; set; }
-
         public bool[][] Generation { get; set; }
-
         public GameState()
         {
 

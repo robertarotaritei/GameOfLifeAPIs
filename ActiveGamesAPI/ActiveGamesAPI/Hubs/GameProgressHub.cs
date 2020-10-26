@@ -9,13 +9,13 @@ namespace ActiveGamesAPI.Hubs
 {
     public class GameProgressHub: Hub
     {
-        public async Task UpdateGameAsync(int gameId, GameState currentState)
+        public async Task UpdateGameAsync(bool[][] currentState)
         {
-            await Clients.All.SendAsync("GameProgressed", gameId, currentState);
+            await Clients.All.SendAsync("GameProgressed", currentState);
         }
-        public async Task RunGameAsync(int gameId, GameState intialState)
+        public async Task RunGameAsync(GameState intialState)
         {
-            await Clients.All.SendAsync("GameInitiated", gameId, intialState);
+            await Clients.All.SendAsync("GameInitiated", intialState);
         }
     }
 }

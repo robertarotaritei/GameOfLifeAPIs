@@ -12,7 +12,7 @@ namespace GameHistoryAPI.Models
 
         public string Author { get; set; }
 
-        public GameState InitialState { get; set; }
+        public string InitialState { get; set; }
 
         internal AppDb Db { get; set; }
 
@@ -37,7 +37,7 @@ namespace GameHistoryAPI.Models
             {
                 ParameterName = "@initialState",
                 DbType = DbType.String,
-                Value = JsonConvert.SerializeObject(InitialState),
+                Value = InitialState,
             });
         }
         private void BindId(MySqlCommand cmd)
