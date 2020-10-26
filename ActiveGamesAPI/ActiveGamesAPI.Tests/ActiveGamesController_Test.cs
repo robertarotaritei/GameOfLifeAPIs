@@ -14,58 +14,52 @@ namespace ActiveGamesAPI.Tests
         public async Task UpdateGame_UpdatesGameState()
         {
             //Arrange
-            var id = 2;
             var generation = new bool[2][];
             generation[0] = new bool[2] { true, false };
             generation[1] = new bool[2] { false, false };
             var gameState = new GameState()
             {
-                IsFinal = false,
                 Generation = generation,
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
 
-            activeGamesMock.Setup(x => x.UpdateGameAsync(id, gameState));
+            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState.Generation));
 
             //Act
             var service = new ActiveGamesController(activeGamesMock.Object);
-            var result = await service.UpdateGame(id, gameState) as OkObjectResult;
+            var result = await service.UpdateGame(gameState.Generation) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
             Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(gameState.IsFinal, ((GameState)actualResult).IsFinal);
-            Assert.Equal(gameState.Generation, ((GameState)actualResult).Generation);
+            Assert.Equal(gameState.Generation, actualResult);
         }
 
         [Fact]
         public async Task RunGame_RunsGameState()
         {
             //Arrange
-            var id = 2;
             var generation = new bool[2][];
             generation[0] = new bool[2] { true, false };
             generation[1] = new bool[2] { false, false };
             var gameState = new GameState()
             {
-                IsFinal = false,
                 Generation = generation,
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
 
-            activeGamesMock.Setup(x => x.RunGameAsync(id, gameState));
+            activeGamesMock.Setup(x => x.RunGameAsync(gameState));
 
             //Act
             var service = new ActiveGamesController(activeGamesMock.Object);
-            var result = await service.RunGame(id, gameState) as OkObjectResult;
+            var result = await service.RunGame(gameState) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
             Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(gameState.IsFinal, ((GameState)actualResult).IsFinal);
-            Assert.Equal(gameState.Generation, ((GameState)actualResult).Generation);
+            Assert.Equal(gameState, ((GameState)actualResult));
         }
     }
 }

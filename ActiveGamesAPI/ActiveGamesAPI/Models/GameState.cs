@@ -8,6 +8,7 @@ namespace ActiveGamesAPI.Models
     public class GameState
     {
         public bool[][] Generation { get; set; }
+
         public GameState()
         {
 
