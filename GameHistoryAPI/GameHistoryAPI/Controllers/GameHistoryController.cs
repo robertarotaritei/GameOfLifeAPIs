@@ -16,6 +16,17 @@ namespace GameHistoryAPI.Controllers
             _historyQuery = historyQuery;
         }
 
+        // GET history/gamehistory
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _historyQuery.AllAsync();
+            if (result is null)
+                return new NotFoundResult();
+
+            return new OkObjectResult(result);
+        }
+
         // GET history/gamehistory/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)

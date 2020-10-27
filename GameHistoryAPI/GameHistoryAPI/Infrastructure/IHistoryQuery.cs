@@ -16,5 +16,7 @@ namespace GameHistoryAPI.Infrastructure
         Task<Game> DeleteAsync(int id);
 
         Task<Game> FindOneAsync(int id);
+
+        Task<List<Game>> AllAsync();
     }
 }

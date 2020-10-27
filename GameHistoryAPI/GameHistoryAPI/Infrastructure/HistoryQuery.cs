@@ -32,6 +32,14 @@ namespace GameHistoryAPI.Models
             return body;
         }
 
+        public async Task<List<Game>> AllAsync()
+        {
+            await Db.Connection.OpenAsync();
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = statement.AllAsync;
+            return await ReadAllAsync(await cmd.ExecuteReaderAsync());
+        }
+
         public async Task<Game> UpdateAsync(int id, Game game)
         {
             var body = await FindOneAsync(id);
