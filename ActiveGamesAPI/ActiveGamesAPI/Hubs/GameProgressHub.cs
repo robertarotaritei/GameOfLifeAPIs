@@ -13,6 +13,7 @@ namespace ActiveGamesAPI.Hubs
         {
             await Clients.All.SendAsync("GameProgressed", currentState);
         }
+
         public async Task RunGameAsync(GameState intialState)
         {
             await Clients.All.SendAsync("GameInitiated", intialState);

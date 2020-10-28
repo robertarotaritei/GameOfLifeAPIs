@@ -11,7 +11,7 @@ namespace ActiveGamesAPI.Tests
     public class ActiveGamesController_Test
     {
         [Fact]
-        public async Task UpdateGame_UpdatesGameState()
+        public async Task UpdateGame_VerifyObject()
         {
             //Arrange
             var generation = new bool[2][];
@@ -23,21 +23,36 @@ namespace ActiveGamesAPI.Tests
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
-
-            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState.Generation));
+            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState.Generation)).ReturnsAsync(gameState.Generation);
+            var service = new ActiveGamesController(activeGamesMock.Object);
 
             //Act
-            var service = new ActiveGamesController(activeGamesMock.Object);
             var result = await service.UpdateGame(gameState.Generation) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
-            Assert.IsType<OkObjectResult>(result);
             Assert.Equal(gameState.Generation, actualResult);
         }
 
         [Fact]
-        public async Task RunGame_RunsGameState()
+        public async Task UpdateGame_VerifyInvalidObject()
+        {
+            //Arrange
+            bool[][] gameState = null;
+
+            var activeGamesMock = new Mock<IGameProgressBroadcaster>();
+            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState)).ReturnsAsync(gameState);
+            var service = new ActiveGamesController(activeGamesMock.Object);
+
+            //Act
+            var result = await service.UpdateGame(gameState) as NotFoundResult;
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task RunGame_VerifyObject()
         {
             //Arrange
             var generation = new bool[2][];
@@ -49,17 +64,32 @@ namespace ActiveGamesAPI.Tests
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
-
-            activeGamesMock.Setup(x => x.RunGameAsync(gameState));
+            activeGamesMock.Setup(x => x.RunGameAsync(gameState)).ReturnsAsync(gameState);
+            var service = new ActiveGamesController(activeGamesMock.Object);
 
             //Act
-            var service = new ActiveGamesController(activeGamesMock.Object);
             var result = await service.RunGame(gameState) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
-            Assert.IsType<OkObjectResult>(result);
             Assert.Equal(gameState, ((GameState)actualResult));
+        }
+
+        [Fact]
+        public async Task RunGame_VerifyInvalidObject()
+        {
+            //Arrange
+            GameState gameState = null;
+
+            var activeGamesMock = new Mock<IGameProgressBroadcaster>();
+            activeGamesMock.Setup(x => x.RunGameAsync(gameState)).ReturnsAsync(gameState);
+            var service = new ActiveGamesController(activeGamesMock.Object);
+
+            //Act
+            var result = await service.RunGame(gameState) as NotFoundResult;
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
         }
     }
 }

@@ -18,16 +18,20 @@ namespace ActiveGamesAPI.Infrastructure
             return connection;
         }
 
-        public async Task UpdateGameAsync(bool[][] currentState)
+        public async Task<bool[][]> UpdateGameAsync(bool[][] currentState)
         {
             await using var connection = await OpenConnectionAsync();
             await connection.InvokeAsync(nameof(GameProgressHub.UpdateGameAsync), currentState);
+
+            return currentState;
         }
 
-        public async Task RunGameAsync(GameState intialState)
+        public async Task<GameState> RunGameAsync(GameState initialState)
         {
             await using var connection = await OpenConnectionAsync();
-            await connection.InvokeAsync(nameof(GameProgressHub.RunGameAsync), intialState);
+            await connection.InvokeAsync(nameof(GameProgressHub.RunGameAsync), initialState);
+
+            return initialState;
         }
     }
 }

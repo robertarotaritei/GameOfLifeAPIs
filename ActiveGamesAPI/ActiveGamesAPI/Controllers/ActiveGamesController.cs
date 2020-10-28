@@ -23,15 +23,21 @@ namespace ActiveGamesAPI.Controllers
         [Route("update")]
         public async Task<IActionResult> UpdateGame(bool[][] currentState)
         {
-            await _gameProgressBroadcaster.UpdateGameAsync(currentState);
+            var result = await _gameProgressBroadcaster.UpdateGameAsync(currentState);
 
-            return new OkObjectResult(currentState);
+            if (result is null)
+                return new NotFoundResult();
+
+            return new OkObjectResult(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> RunGame(GameState initialState)
         {
-            await _gameProgressBroadcaster.RunGameAsync(initialState);
+            var result = await _gameProgressBroadcaster.RunGameAsync(initialState);
+
+            if (result is null)
+                return new NotFoundResult();
 
             return new OkObjectResult(initialState);
         }

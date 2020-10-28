@@ -21,7 +21,8 @@ namespace GameHistoryAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var result = await _historyQuery.AllAsync();
-            if (result is null)
+
+            if (result.Count == 0)
                 return new NotFoundResult();
 
             return new OkObjectResult(result);
@@ -32,6 +33,7 @@ namespace GameHistoryAPI.Controllers
         public async Task<IActionResult> GetOne(int id)
         {
             var result = await _historyQuery.FindOneAsync(id);
+
             if (result is null)
                 return new NotFoundResult();
 
@@ -42,7 +44,11 @@ namespace GameHistoryAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Game body)
         {
-            await _historyQuery.InsertAsync(body);
+            var result = await _historyQuery.InsertAsync(body);
+
+            if (result is null)
+                return new NotFoundResult();
+
             return new OkObjectResult(body);
         }
 
@@ -51,6 +57,10 @@ namespace GameHistoryAPI.Controllers
         public async Task<IActionResult> PutOne(int id, [FromBody] Game body)
         {
             var result = await _historyQuery.UpdateAsync(id, body);
+
+            if (result is null)
+                return new NotFoundResult();
+
             return new OkObjectResult(result);
         }
 
@@ -59,6 +69,10 @@ namespace GameHistoryAPI.Controllers
         public async Task<IActionResult> DeleteOne(int id)
         {
             var result = await _historyQuery.DeleteAsync(id);
+
+            if (result is null)
+                return new NotFoundResult();
+
             return new OkObjectResult(result);
         }
 

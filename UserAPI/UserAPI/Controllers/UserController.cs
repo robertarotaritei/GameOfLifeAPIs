@@ -21,6 +21,7 @@ namespace UserAPI.Controllers
         public async Task<IActionResult> GetOne(int id)
         {
             var result = await _userQuery.FindOneAsync(id);
+
             if (result is null)
                 return new NotFoundResult();
 
@@ -33,6 +34,7 @@ namespace UserAPI.Controllers
         public async Task<IActionResult> VerifyOne(string username, string password)
         {
             var result = await _userQuery.VerifyOneAsync(username, password);
+
             if (result is null)
                 return new NotFoundResult();
 
@@ -45,18 +47,22 @@ namespace UserAPI.Controllers
         public async Task<IActionResult> VerifyUsername(string username)
         {
             var result = await _userQuery.VerifyUsernameAsync(username);
+
             if (result is null)
                 return new NotFoundResult();
 
             return new OkObjectResult(result);
         }
 
-
         // POST credentials/user
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User body)
         {
-            await _userQuery.InsertAsync(body);
+            var result = await _userQuery.InsertAsync(body);
+
+            if (result is null)
+                return new NotFoundResult();
+
             return new OkObjectResult(body);
         }
 
@@ -65,6 +71,10 @@ namespace UserAPI.Controllers
         public async Task<IActionResult> PutOne(int id, [FromBody] string password)
         {
             var result = await _userQuery.UpdateAsync(id, password);
+
+            if (result is null)
+                return new NotFoundResult();
+
             return new OkObjectResult(result);
         }
 
@@ -73,6 +83,10 @@ namespace UserAPI.Controllers
         public async Task<IActionResult> DeleteOne(int id)
         {
             var result = await _userQuery.DeleteAsync(id);
+
+            if (result is null)
+                return new NotFoundResult();
+
             return new OkObjectResult(result);
         }
     }

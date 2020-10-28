@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHistoryAPI", "GameHistoryAPI\GameHistoryAPI.csproj", "{A6C12A4C-C141-4559-A17D-5911F602D4CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameHistoryAPI", "GameHistoryAPI\GameHistoryAPI.csproj", "{A6C12A4C-C141-4559-A17D-5911F602D4CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameHistoryAPI.Tests", "GameHistoryAPI.Tests\GameHistoryAPI.Tests.csproj", "{69D94244-48FF-4DED-8B3B-D175BF3696F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A6C12A4C-C141-4559-A17D-5911F602D4CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6C12A4C-C141-4559-A17D-5911F602D4CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6C12A4C-C141-4559-A17D-5911F602D4CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69D94244-48FF-4DED-8B3B-D175BF3696F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69D94244-48FF-4DED-8B3B-D175BF3696F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69D94244-48FF-4DED-8B3B-D175BF3696F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69D94244-48FF-4DED-8B3B-D175BF3696F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

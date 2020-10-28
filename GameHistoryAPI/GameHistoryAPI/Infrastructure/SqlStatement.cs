@@ -7,15 +7,15 @@ namespace GameHistoryAPI.Infrastructure
 {
     public class SqlStatement
     {
-        public string InsertAsync { get; set; }
+        public string InsertAsync { get; }
 
-        public string UpdateAsync { get; set; }
+        public string UpdateAsync { get; }
 
-        public string DeleteAsync { get; set; }
+        public string DeleteAsync { get; }
 
-        public string FindOneAsync { get; set; }
+        public string FindOneAsync { get; }
 
-        public string AllAsync { get; set; }
+        public string AllAsync { get; }
 
         public SqlStatement()
         {

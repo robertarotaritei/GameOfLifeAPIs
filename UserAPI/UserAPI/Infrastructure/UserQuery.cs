@@ -21,24 +21,30 @@ namespace UserAPI.Models
 
         public async Task<User> InsertAsync(User body)
         {
-            await Db.Connection.OpenAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.InsertAsync;
-            BindParams(cmd, body.Username, body.Password);
-            await cmd.ExecuteNonQueryAsync();
-            body.Id = (int)cmd.LastInsertedId;
+            if (body.Username.Length > 3 && body.Password.Length > 4)
+            {
+                await Db.Connection.OpenAsync();
+                using var cmd = Db.Connection.CreateCommand();
+                cmd.CommandText = statement.InsertAsync;
+                BindParams(cmd, body.Username, body.Password);
+                await cmd.ExecuteNonQueryAsync();
 
-            return body;
+                body.Id = (int)cmd.LastInsertedId;
+                return body;
+            }
+
+            return null;
         }
 
         public async Task<User> UpdateAsync(int id, string password)
         {
-            var body = await FindOneAsync(id);
+            await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = statement.UpdateAsync;
-            BindParams(cmd, body.Username, password);
-            BindId(cmd, body.Id);
+            BindPassword(cmd, password);
+            BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -47,7 +53,7 @@ namespace UserAPI.Models
             var body = await FindOneAsync(id);
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = statement.DeleteAsync;
-            BindId(cmd, body.Id);
+            BindId(cmd, id);
             await cmd.ExecuteNonQueryAsync();
 
             return body;
@@ -60,6 +66,7 @@ namespace UserAPI.Models
             cmd.CommandText = statement.FindOneAsync;
             BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -70,6 +77,7 @@ namespace UserAPI.Models
             cmd.CommandText = statement.VerifyOneAsync;
             BindParams(cmd, username, password);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -78,8 +86,9 @@ namespace UserAPI.Models
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = statement.VerifyUsernameAsync;
-            BindParams(cmd, username);
+            BindUsername(cmd, username);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -99,6 +108,7 @@ namespace UserAPI.Models
                     users.Add(user);
                 }
             }
+
             return users;
         }
 
@@ -128,13 +138,23 @@ namespace UserAPI.Models
             });
         }
 
-        private void BindParams(MySqlCommand cmd, string username)
+        private void BindUsername(MySqlCommand cmd, string username)
         {
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@username",
                 DbType = DbType.String,
                 Value = username,
+            });
+        }
+
+        private void BindPassword(MySqlCommand cmd, string password)
+        {
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@password",
+                DbType = DbType.String,
+                Value = password,
             });
         }
     }

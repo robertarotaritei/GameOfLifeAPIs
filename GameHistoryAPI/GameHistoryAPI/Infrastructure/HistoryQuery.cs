@@ -37,17 +37,19 @@ namespace GameHistoryAPI.Models
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = statement.AllAsync;
+
             return await ReadAllAsync(await cmd.ExecuteReaderAsync());
         }
 
         public async Task<Game> UpdateAsync(int id, Game game)
         {
-            var body = await FindOneAsync(id);
+            await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = statement.UpdateAsync;
             BindParams(cmd, game.InitialState);
-            BindId(cmd, body.Id);
+            BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
             return result.Count > 0 ? result[0] : null;
         }
 
@@ -56,7 +58,7 @@ namespace GameHistoryAPI.Models
             var body = await FindOneAsync(id);
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = statement.DeleteAsync;
-            BindId(cmd, body.Id);
+            BindId(cmd, id);
             await cmd.ExecuteNonQueryAsync();
 
             return body;
@@ -69,6 +71,7 @@ namespace GameHistoryAPI.Models
             cmd.CommandText = statement.FindOneAsync;
             BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
             return result.Count > 0 ? result[0] : null;
         }
 
