@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ActiveGamesAPI.Hubs;
 using ActiveGamesAPI.Models;
@@ -18,7 +15,7 @@ namespace ActiveGamesAPI.Infrastructure
             return connection;
         }
 
-        public async Task<bool[][]> UpdateGameAsync(bool[][] currentState)
+        public async Task<GameState> UpdateGameAsync(GameState currentState)
         {
             await using var connection = await OpenConnectionAsync();
             await connection.InvokeAsync(nameof(GameProgressHub.UpdateGameAsync), currentState);

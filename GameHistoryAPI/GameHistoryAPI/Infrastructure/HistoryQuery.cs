@@ -12,19 +12,19 @@ namespace GameHistoryAPI.Models
     {
         public AppDb Db { get; }
 
-        public SqlStatement statement { get; }
+        public SqlStatement Statement { get; }
 
         public HistoryQuery(string connectionString)
         {
             Db = new AppDb(connectionString);
-            statement = new SqlStatement();
+            Statement = new SqlStatement();
         }
 
         public async Task<Game> InsertAsync(Game body)
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.InsertAsync;
+            cmd.CommandText = Statement.InsertAsync;
             BindParams(cmd, body.Author, body.InitialState);
             await cmd.ExecuteNonQueryAsync();
             body.Id = (int)cmd.LastInsertedId;
@@ -36,7 +36,7 @@ namespace GameHistoryAPI.Models
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.AllAsync;
+            cmd.CommandText = Statement.AllAsync;
 
             return await ReadAllAsync(await cmd.ExecuteReaderAsync());
         }
@@ -45,7 +45,7 @@ namespace GameHistoryAPI.Models
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.UpdateAsync;
+            cmd.CommandText = Statement.UpdateAsync;
             BindParams(cmd, game.InitialState);
             BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
@@ -57,7 +57,7 @@ namespace GameHistoryAPI.Models
         {
             var body = await FindOneAsync(id);
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.DeleteAsync;
+            cmd.CommandText = Statement.DeleteAsync;
             BindId(cmd, id);
             await cmd.ExecuteNonQueryAsync();
 
@@ -68,7 +68,7 @@ namespace GameHistoryAPI.Models
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.FindOneAsync;
+            cmd.CommandText = Statement.FindOneAsync;
             BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
 

@@ -1,22 +1,22 @@
 ﻿using ActiveGamesAPI.Models;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ActiveGamesAPI.Hubs
 {
     public class GameProgressHub: Hub
     {
-        public async Task UpdateGameAsync(bool[][] currentState)
+        public async Task UpdateGameAsync(GameState currentState)
         {
-            await Clients.All.SendAsync("GameProgressed", currentState);
+            currentState.RunnerConnectionId = Context.ConnectionId;
+            await Clients.Clients(currentState.ReactConnectionId).SendAsync("GameProgressed", currentState);
         }
 
-        public async Task RunGameAsync(GameState intialState)
+        public async Task RunGameAsync(GameState initialState)
         {
-            await Clients.All.SendAsync("GameInitiated", intialState);
+            await Clients.AllExcept(initialState.ReactConnectionId).SendAsync("GameInitiated", initialState);
         }
+
+        public string GetConnectionId() => Context.ConnectionId;
     }
 }

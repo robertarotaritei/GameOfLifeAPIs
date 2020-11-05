@@ -1,9 +1,6 @@
 ﻿using ActiveGamesAPI.Infrastructure;
 using ActiveGamesAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ActiveGamesAPI.Controllers
@@ -21,9 +18,9 @@ namespace ActiveGamesAPI.Controllers
 
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> UpdateGame(bool[][] currentState)
+        public async Task<IActionResult> UpdateGame(GameState nextState)
         {
-            var result = await _gameProgressBroadcaster.UpdateGameAsync(currentState);
+            var result = await _gameProgressBroadcaster.UpdateGameAsync(nextState);
 
             if (result is null)
                 return new NotFoundResult();

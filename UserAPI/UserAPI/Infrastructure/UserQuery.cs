@@ -11,12 +11,12 @@ namespace UserAPI.Models
     {
         public AppDb Db { get; }
 
-        public SqlStatement statement { get; }
+        public SqlStatement Statement { get; }
 
         public UserQuery(string connectionString)
         {
             Db = new AppDb(connectionString);
-            statement = new SqlStatement();
+            Statement = new SqlStatement();
         }
 
         public async Task<User> InsertAsync(User body)
@@ -25,7 +25,7 @@ namespace UserAPI.Models
             {
                 await Db.Connection.OpenAsync();
                 using var cmd = Db.Connection.CreateCommand();
-                cmd.CommandText = statement.InsertAsync;
+                cmd.CommandText = Statement.InsertAsync;
                 BindParams(cmd, body.Username, body.Password);
                 await cmd.ExecuteNonQueryAsync();
 
@@ -40,7 +40,7 @@ namespace UserAPI.Models
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.UpdateAsync;
+            cmd.CommandText = Statement.UpdateAsync;
             BindPassword(cmd, password);
             BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
@@ -52,7 +52,7 @@ namespace UserAPI.Models
         {
             var body = await FindOneAsync(id);
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.DeleteAsync;
+            cmd.CommandText = Statement.DeleteAsync;
             BindId(cmd, id);
             await cmd.ExecuteNonQueryAsync();
 
@@ -63,7 +63,7 @@ namespace UserAPI.Models
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.FindOneAsync;
+            cmd.CommandText = Statement.FindOneAsync;
             BindId(cmd, id);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
 
@@ -74,7 +74,7 @@ namespace UserAPI.Models
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.VerifyOneAsync;
+            cmd.CommandText = Statement.VerifyOneAsync;
             BindParams(cmd, username, password);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
 
@@ -85,7 +85,7 @@ namespace UserAPI.Models
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = statement.VerifyUsernameAsync;
+            cmd.CommandText = Statement.VerifyUsernameAsync;
             BindUsername(cmd, username);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
 
