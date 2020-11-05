@@ -20,25 +20,27 @@ namespace ActiveGamesAPI.Tests
             var gameState = new GameState()
             {
                 Generation = generation,
+                ReactConnectionId = "",
+                RunnerConnectionId = ""
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
-            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState.Generation)).ReturnsAsync(gameState.Generation);
+            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState)).ReturnsAsync(gameState);
             var service = new ActiveGamesController(activeGamesMock.Object);
 
             //Act
-            var result = await service.UpdateGame(gameState.Generation) as OkObjectResult;
+            var result = await service.UpdateGame(gameState) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(gameState.Generation, actualResult);
+            Assert.Equal(gameState, actualResult);
         }
 
         [Fact]
         public async Task UpdateGame_VerifyInvalidObject()
         {
             //Arrange
-            bool[][] gameState = null;
+            GameState gameState = null;
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
             activeGamesMock.Setup(x => x.UpdateGameAsync(gameState)).ReturnsAsync(gameState);
