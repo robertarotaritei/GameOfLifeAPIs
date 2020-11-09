@@ -4,7 +4,6 @@ using System.Data.Common;
 using System.Threading.Tasks;
 using MySqlConnector;
 using GameHistoryAPI.Infrastructure;
-using System.Text.Json;
 
 namespace GameHistoryAPI.Models
 {
@@ -20,16 +19,16 @@ namespace GameHistoryAPI.Models
             Statement = new SqlStatement();
         }
 
-        public async Task<Game> InsertAsync(Game body)
+        public async Task<Game> InsertAsync(Game game)
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = Statement.InsertAsync;
-            BindParams(cmd, body.Author, body.InitialState);
+            BindParams(cmd, game.Author, game.InitialState);
             await cmd.ExecuteNonQueryAsync();
-            body.Id = (int)cmd.LastInsertedId;
+            game.Id = (int)cmd.LastInsertedId;
 
-            return body;
+            return game;
         }
 
         public async Task<List<Game>> AllAsync()

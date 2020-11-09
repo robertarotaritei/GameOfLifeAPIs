@@ -1,10 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Data;
-using MySqlConnector;
-using Newtonsoft.Json;
-
-namespace GameHistoryAPI.Models
+﻿namespace GameHistoryAPI.Models
 {
     public class Game
     {

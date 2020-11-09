@@ -7,6 +7,6 @@ namespace ActiveGamesAPI.Infrastructure
     {
         Task<GameState> UpdateGameAsync(GameState currentState);
 
-        Task<GameState> RunGameAsync(GameState intialState);
+        Task<GameState> RunGameAsync(GameState initialState);
     }
 }

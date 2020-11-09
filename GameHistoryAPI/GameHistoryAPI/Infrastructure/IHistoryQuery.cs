@@ -1,7 +1,4 @@
-﻿using MySqlConnector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GameHistoryAPI.Models;
 
@@ -9,9 +6,9 @@ namespace GameHistoryAPI.Infrastructure
 {
     public interface IHistoryQuery
     {
-        Task<Game> InsertAsync(Game body);
+        Task<Game> InsertAsync(Game game);
 
-        Task<Game> UpdateAsync(int id, Game body);
+        Task<Game> UpdateAsync(int id, Game game);
 
         Task<Game> DeleteAsync(int id);
 

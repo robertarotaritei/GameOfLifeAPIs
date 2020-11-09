@@ -3,7 +3,7 @@ using MySqlConnector;
 
 namespace GameHistoryAPI
 {
-    public class AppDb : IDisposable
+    public sealed class AppDb : IDisposable
     {
         public MySqlConnection Connection { get; }
 
@@ -12,7 +12,11 @@ namespace GameHistoryAPI
             Connection = new MySqlConnection(connectionString);
         }
 
-        public void Dispose() => Connection.Dispose();
+        public void Dispose()
+        {
+            Connection.Dispose();
+            GC.SuppressFinalize(this);
+        }
 
     }
 }

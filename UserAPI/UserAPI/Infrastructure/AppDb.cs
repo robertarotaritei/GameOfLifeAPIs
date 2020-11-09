@@ -3,7 +3,7 @@ using MySqlConnector;
 
 namespace UserAPI
 {
-    public class AppDb : IDisposable
+    public sealed class AppDb : IDisposable
     {
         public MySqlConnection Connection { get; }
 
@@ -12,6 +12,10 @@ namespace UserAPI
             Connection = new MySqlConnection(connectionString);
         }
 
-        public void Dispose() => Connection.Dispose();
+        public void Dispose()
+        {
+            Connection.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }
