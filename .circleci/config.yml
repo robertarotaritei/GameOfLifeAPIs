@@ -36,9 +36,9 @@ jobs:
     executor: docker-publisher
     steps:
       - attach_workspace:
-          at: C:\Users\circleci\project
+          at: ActiveGamesAPI
       - setup_remote_docker
-      - run: docker load -i C:\Users\circleci\project\image.tar
+      - run: docker load -i ActiveGamesAPI/image.tar
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
