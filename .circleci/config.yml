@@ -88,23 +88,17 @@ jobs:
 workflows:
   build_and_test:
     jobs:
-      - build-active-games-api:
+      - build-and-test-active-games-api:
           filters:
             branches:
               only: master
-      - test-active-games-api:
-          filters:
-            branches:
-              only: master
-          requires:
-            - build-active-games-api
       - publish-latest-active-games-api:
           context: Docker
           filters:
             branches:
               only: master
           requires:
-            - build-active-games-api
+            - build-and-test-active-games-api
       - build-game-history-api:
           filters:
             branches:
