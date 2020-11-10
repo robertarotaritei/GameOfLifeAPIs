@@ -1,1 +1,0 @@
-D:\School\GameOfLifeAPIs\GameHistoryAPI\.sonarqube\out\1
