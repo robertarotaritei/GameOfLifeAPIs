@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   windows: circleci/windows@2.2.0
+  sonarcloud: sonarsource/sonarcloud@1.0.1
 
 jobs:
   build-active-games-api:
@@ -20,6 +21,7 @@ jobs:
       - run: cd ActiveGamesAPI; dotnet.exe build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
+      - sonarcloud/scan
   test-active-games-api:
     executor:
       name: windows/default
@@ -44,6 +46,7 @@ jobs:
       - run: cd GameHistoryAPI; dotnet.exe build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
+      - sonarcloud/scan
   test-game-history-api:
     executor:
       name: windows/default
@@ -68,6 +71,7 @@ jobs:
       - run: cd UserAPI; dotnet.exe build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
+      - sonarcloud/scan
   test-user-api:
     executor:
       name: windows/default
@@ -80,6 +84,7 @@ workflows:
   build_and_test:
     jobs:
       - build-active-games-api:
+          context: SonarCloud
           filters:
             branches:
               only: master
@@ -90,6 +95,7 @@ workflows:
           requires:
             - build-active-games-api
       - build-game-history-api:
+          context: SonarCloud
           filters:
             branches:
               only: master
@@ -100,6 +106,7 @@ workflows:
           requires:
             - build-game-history-api
       - build-user-api:
+          context: SonarCloud
           filters:
             branches:
               only: master
