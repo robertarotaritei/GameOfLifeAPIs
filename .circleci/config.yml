@@ -36,9 +36,9 @@ jobs:
     executor: docker-publisher
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: /root/project
       - setup_remote_docker
-      - run: docker load -i /tmp/workspace/image.tar
+      - run: docker load -i /root/project/image.tar
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
