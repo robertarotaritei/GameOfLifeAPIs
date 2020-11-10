@@ -1,91 +1,100 @@
 version: 2.1
 
+executors:
+  docker-publisher:
+    environment:
+      IMAGE_NAME: robertaro/game-of-life-active-games-api
+      
 jobs:
   build-active-games-api:
-    executor:
-      name: windows/default
+    docker: 
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
       - checkout
       - restore_cache:
           keys:
             - dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
-      - run: cd ActiveGamesAPI; dotnet.exe restore
+      - run: cd ActiveGamesAPI; dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
-      - run: cd ActiveGamesAPI; dotnet.exe build --configuration Release
+      - run: cd ActiveGamesAPI; dotnet build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
-      - sonarcloud/scan
   test-active-games-api:
-    executor:
-      name: windows/default
+    docker: 
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
       - checkout
-      - run: cd ActiveGamesAPI; dotnet.exe test -v n --results-directory:test_results --collect:"Code Coverage"
+      - run: cd ActiveGamesAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_test_results:
           path: C:\Users\circleci\project\test_results
+  publish-latest-active-games-api:
+    executor: docker-publisher
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker
+      - run: docker load -i /tmp/workspace/image.tar
+      - run: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $IMAGE_NAME:latest
   build-game-history-api:
-    executor:
-      name: windows/default
+    docker: 
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
       - checkout
       - restore_cache:
           keys:
             - dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csproj" }}
-      - run: cd GameHistoryAPI; dotnet.exe restore
+      - run: cd GameHistoryAPI; dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csproj" }}
-      - run: cd GameHistoryAPI; dotnet.exe build --configuration Release
+      - run: cd GameHistoryAPI; dotnet build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
       - sonarcloud/scan
   test-game-history-api:
-    executor:
-      name: windows/default
+    docker: 
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
       - checkout
-      - run: cd GameHistoryAPI; dotnet.exe test -v n --results-directory:test_results --collect:"Code Coverage"
+      - run: cd GameHistoryAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_test_results:
           path: C:\Users\circleci\project\test_results
   build-user-api:
-    executor:
-      name: windows/default
+    docker: 
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
       - checkout
       - restore_cache:
           keys:
             - dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csproj" }}
-      - run: cd UserAPI; dotnet.exe restore
+      - run: cd UserAPI; dotnet restore
       - save_cache:
           paths:
             - C:\Users\circleci\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csproj" }}
-      - run: cd UserAPI; dotnet.exe build --configuration Release
+      - run: cd UserAPI; dotnet build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
       - sonarcloud/scan
   test-user-api:
-    executor:
-      name: windows/default
+    docker: 
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
       - checkout
-      - run: cd UserAPI; dotnet.exe test -v n --results-directory:test_results --collect:"Code Coverage"
+      - run: cd UserAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_test_results:
           path: C:\Users\circleci\project\test_results
-
-orbs:
-  windows: circleci/windows@2.2.0
-  sonarcloud: sonarsource/sonarcloud@1.0.1
 
 workflows:
   build_and_test:
     jobs:
       - build-active-games-api:
-          context: SonarCloud
           filters:
             branches:
               only: master
@@ -95,11 +104,17 @@ workflows:
               only: master
           requires:
             - build-active-games-api
-      - build-game-history-api:
-          context: SonarCloud
+      - publish-lastest-active-games-api:
+          context: Docker
           filters:
             branches:
               only: master
+          requires:
+            - build-active-games-api
+      - build-game-history-api:
+          filters:
+            branches:
+              only: masters
       - test-game-history-api:
           filters:
             branches:
@@ -107,7 +122,6 @@ workflows:
           requires:
             - build-game-history-api
       - build-user-api:
-          context: SonarCloud
           filters:
             branches:
               only: master

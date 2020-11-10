@@ -1,0 +1,11 @@
+d
+[D:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Controllers\GameHistoryController.csutf-8W
+ND:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Infrastructure\AppDb.csutf-8^
+UD:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Infrastructure\HistoryQuery.csutf-8_
+VD:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Infrastructure\IHistoryQuery.csutf-8^
+UD:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Infrastructure\SqlStatement.csutf-8N
+ED:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Models\Game.csutf-8J
+AD:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Program.csutf-8J
+AD:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\Startup.csutf-8ˆ
+}D:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.csutf-8x
+mD:\School\GameOfLifeAPIs\GameHistoryAPI\GameHistoryAPI\obj\Debug\netcoreapp3.1\GameHistoryAPI.AssemblyInfo.csutf-8

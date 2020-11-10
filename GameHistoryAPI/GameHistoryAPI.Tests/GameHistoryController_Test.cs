@@ -30,7 +30,7 @@ namespace GameHistoryAPI.Tests
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(game, ((Game)actualResult));
+            Assert.Equal(game, (Game)actualResult);
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace GameHistoryAPI.Tests
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(games, ((List<Game>)actualResult));
+            Assert.Equal(games, (List<Game>)actualResult);
         }
 
         [Fact]
@@ -150,7 +150,7 @@ namespace GameHistoryAPI.Tests
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(returnedGame, ((Game)actualResult));
+            Assert.Equal(returnedGame, (Game)actualResult);
         }
 
         [Fact]
@@ -197,7 +197,7 @@ namespace GameHistoryAPI.Tests
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(game, ((Game)actualResult));
+            Assert.Equal(game, (Game)actualResult);
         }
 
         [Fact]
@@ -238,7 +238,7 @@ namespace GameHistoryAPI.Tests
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(game, ((Game)actualResult));
+            Assert.Equal(game, (Game)actualResult);
         }
 
         [Fact]

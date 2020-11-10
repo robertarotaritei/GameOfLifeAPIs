@@ -1,0 +1,11 @@
+O
+FD:\School\GameOfLifeAPIs\UserAPI\UserAPI\Controllers\UserController.csutf-8I
+@D:\School\GameOfLifeAPIs\UserAPI\UserAPI\Infrastructure\AppDb.csutf-8N
+ED:\School\GameOfLifeAPIs\UserAPI\UserAPI\Infrastructure\IUserQuery.csutf-8P
+GD:\School\GameOfLifeAPIs\UserAPI\UserAPI\Infrastructure\SqlStatement.csutf-8M
+DD:\School\GameOfLifeAPIs\UserAPI\UserAPI\Infrastructure\UserQuery.csutf-8@
+7D:\School\GameOfLifeAPIs\UserAPI\UserAPI\Models\User.csutf-8<
+3D:\School\GameOfLifeAPIs\UserAPI\UserAPI\Program.csutf-8<
+3D:\School\GameOfLifeAPIs\UserAPI\UserAPI\Startup.csutf-8z
+oD:\School\GameOfLifeAPIs\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.csutf-8c
+XD:\School\GameOfLifeAPIs\UserAPI\UserAPI\obj\Debug\netcoreapp3.1\UserAPI.AssemblyInfo.csutf-8
