@@ -31,14 +31,14 @@ jobs:
       - checkout
       - run: cd ActiveGamesAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_test_results:
-          path: C:\Users\circleci\project\test_results
+          path: ActiveGamesAPI\test_results
   publish-latest-active-games-api:
     executor: docker-publisher
     steps:
       - attach_workspace:
-          at: /root/project
+          at: C:\Users\circleci\project
       - setup_remote_docker
-      - run: docker load -i /root/project/image.tar
+      - run: docker load -i C:\Users\circleci\project\image.tar
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
@@ -57,7 +57,7 @@ jobs:
           key: dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csproj" }}
       - run: cd GameHistoryAPI; dotnet build --configuration Release
       - store_artifacts:
-          path: C:\Users\circleci\project
+          path: GameHistoryAPI
   test-game-history-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -65,7 +65,7 @@ jobs:
       - checkout
       - run: cd GameHistoryAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_test_results:
-          path: C:\Users\circleci\project\test_results
+          path: GameHistoryAPI\test_results
   build-user-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -81,7 +81,7 @@ jobs:
           key: dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csproj" }}
       - run: cd UserAPI; dotnet build --configuration Release
       - store_artifacts:
-          path: C:\Users\circleci\project
+          path: UserAPI
   test-user-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -89,7 +89,7 @@ jobs:
       - checkout
       - run: cd UserAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_test_results:
-          path: C:\Users\circleci\project\test_results
+          path: UserAPI\test_results
 
 workflows:
   build_and_test:
