@@ -6,7 +6,7 @@ executors:
       IMAGE_NAME: robertaro/game-of-life-active-games-api
     docker:
       - image: circleci/buildpack-deps:stretch
-      
+
 jobs:
   build-active-games-api:
     docker: 
@@ -38,7 +38,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-            docker build -t $IMAGE_NAME:latest .
+            cd ActiveGamesAPI && docker build -t $IMAGE_NAME:latest .
       - run: docker save -o image.tar $IMAGE_NAME
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
