@@ -3,7 +3,8 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: robertaro/game-of-life-active-games-api
+      ACTIVE_GAMES_NAME: robertaro/game-of-life-active-games-api
+      GAME_HISTORY_NAME: robertaro/gameof-life-game-history-api
     docker:
       - image: circleci/buildpack-deps:stretch
 
@@ -25,18 +26,20 @@ jobs:
       - run: cd ActiveGamesAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_artifacts:
           path: ActiveGamesAPI
+  
   publish-latest-active-games-api:
     executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker
       - run: |
-            cd ActiveGamesAPI && docker build -t $IMAGE_NAME:latest .
-      - run: docker save -o image.tar $IMAGE_NAME
+            cd ActiveGamesAPI && docker build -t $ACTIVE_GAMES_NAME:latest .
+      - run: docker save -o image.tar $ACTIVE_GAMES_NAME
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push $IMAGE_NAME:latest
-  build-game-history-api:
+            docker push $ACTIVE_GAMES_NAME:latest
+  
+  build-and-test-game-history-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
@@ -50,16 +53,22 @@ jobs:
             - C:\Users\circleci\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "GameHistoryAPI/GameHistoryAPI/GameHistoryAPI.csproj" }}
       - run: cd GameHistoryAPI; dotnet build --configuration Release
+      - run: cd GameHistoryAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_artifacts:
           path: GameHistoryAPI
-  test-game-history-api:
-    docker: 
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  
+  publish-latest-game-history-api:
+    executor: docker-publisher
     steps:
       - checkout
-      - run: cd GameHistoryAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
-      - store_test_results:
-          path: GameHistoryAPI\test_results
+      - setup_remote_docker
+      - run: |
+            cd GameHistoryAPI && docker build -t $GAME_HISTORY_NAME:latest .
+      - run: docker save -o image.tar $GAME_HISTORY_NAME
+      - run: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $GAME_HISTORY_NAME:latest
+            
   build-user-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -99,16 +108,17 @@ workflows:
               only: master
           requires:
             - build-and-test-active-games-api
-      - build-game-history-api:
+      - build-and-test-game-history-api:
           filters:
             branches:
               only: masters
-      - test-game-history-api:
+      - publish-latest-game-history-api:
+          context: Docker
           filters:
             branches:
               only: master
           requires:
-            - build-game-history-api
+            - build-and-test-game-history-api
       - build-user-api:
           filters:
             branches:
