@@ -35,10 +35,11 @@ jobs:
   publish-latest-active-games-api:
     executor: docker-publisher
     steps:
-      - attach_workspace:
-          at: ActiveGamesAPI
+      - checkout
       - setup_remote_docker
-      - run: docker load -i ActiveGamesAPI/image.tar
+      - run: |
+            docker build -t $IMAGE_NAME:latest .
+      - run: docker save -o image.tar $IMAGE_NAME
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
