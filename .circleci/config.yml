@@ -104,7 +104,7 @@ workflows:
               only: master
           requires:
             - build-active-games-api
-      - publish-lastest-active-games-api:
+      - publish-latest-active-games-api:
           context: Docker
           filters:
             branches:
