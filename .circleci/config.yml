@@ -8,7 +8,7 @@ executors:
       - image: circleci/buildpack-deps:stretch
 
 jobs:
-  build-active-games-api:
+  build-and-test-active-games-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
@@ -22,16 +22,9 @@ jobs:
             - C:\Users\circleci\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
       - run: cd ActiveGamesAPI; dotnet build --configuration Release
+      - run: cd ActiveGamesAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_artifacts:
           path: ActiveGamesAPI
-  test-active-games-api:
-    docker: 
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    steps:
-      - checkout
-      - run: cd ActiveGamesAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
-      - store_test_results:
-          path: ActiveGamesAPI\test_results
   publish-latest-active-games-api:
     executor: docker-publisher
     steps:
