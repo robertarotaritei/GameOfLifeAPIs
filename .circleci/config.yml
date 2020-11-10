@@ -1,9 +1,5 @@
 version: 2.1
 
-orbs:
-  windows: circleci/windows@2.2.0
-  sonarcloud: sonarsource/sonarcloud@1.0.1
-
 jobs:
   build-active-games-api:
     executor:
@@ -80,6 +76,11 @@ jobs:
       - run: cd UserAPI; dotnet.exe test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_test_results:
           path: C:\Users\circleci\project\test_results
+
+orbs:
+  windows: circleci/windows@2.2.0
+  sonarcloud: sonarsource/sonarcloud@1.0.1
+
 workflows:
   build_and_test:
     jobs:
