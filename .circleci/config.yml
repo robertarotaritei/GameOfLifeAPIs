@@ -23,7 +23,7 @@ jobs:
           key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
       - run: cd ActiveGamesAPI; dotnet build --configuration Release
       - store_artifacts:
-          path: C:\Users\circleci\project
+          path: ActiveGamesAPI
   test-active-games-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
