@@ -5,6 +5,7 @@ executors:
     environment:
       ACTIVE_GAMES_NAME: robertaro/game-of-life-active-games-api
       GAME_HISTORY_NAME: robertaro/gameof-life-game-history-api
+      USER_NAME: robertaro/gameof-life-user-api
     docker:
       - image: circleci/buildpack-deps:stretch
 
@@ -69,7 +70,7 @@ jobs:
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $GAME_HISTORY_NAME:latest
             
-  build-user-api:
+  build-and-test-user-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
@@ -83,16 +84,21 @@ jobs:
             - C:\Users\circleci\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "UserAPI/UserAPI/UserAPI.csproj" }}
       - run: cd UserAPI; dotnet build --configuration Release
+      - run: cd UserAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_artifacts:
           path: UserAPI
-  test-user-api:
-    docker: 
-      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+          
+  publish-latest-user-api:
+    executor: docker-publisher
     steps:
       - checkout
-      - run: cd UserAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
-      - store_test_results:
-          path: UserAPI\test_results
+      - setup_remote_docker
+      - run: |
+            cd UserAPI && docker build -t $USER_NAME:latest .
+      - run: docker save -o image.tar $USER_NAME
+      - run: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            docker push $USER_NAME:latest
 
 workflows:
   build_and_test:
@@ -119,13 +125,13 @@ workflows:
               only: master
           requires:
             - build-and-test-game-history-api
-      - build-user-api:
+      - build-and-test-user-api:
           filters:
             branches:
               only: master
-      - test-user-api:
+      - publish-latest-user-api:
           filters:
             branches:
               only: master
           requires:
-            - build-user-api
+            - build-and-test-user-api
