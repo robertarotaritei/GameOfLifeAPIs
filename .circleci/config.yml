@@ -4,6 +4,8 @@ executors:
   docker-publisher:
     environment:
       IMAGE_NAME: robertaro/game-of-life-active-games-api
+    docker:
+      - image: circleci/buildpack-deps:stretch
       
 jobs:
   build-active-games-api:
