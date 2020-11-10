@@ -56,7 +56,6 @@ jobs:
       - run: cd GameHistoryAPI; dotnet build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
-      - sonarcloud/scan
   test-game-history-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -81,7 +80,6 @@ jobs:
       - run: cd UserAPI; dotnet build --configuration Release
       - store_artifacts:
           path: C:\Users\circleci\project
-      - sonarcloud/scan
   test-user-api:
     docker: 
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
