@@ -117,7 +117,7 @@ workflows:
       - build-and-test-game-history-api:
           filters:
             branches:
-              only: masters
+              only: master
       - publish-latest-game-history-api:
           context: Docker
           filters:
@@ -130,6 +130,7 @@ workflows:
             branches:
               only: master
       - publish-latest-user-api:
+          context: Docker
           filters:
             branches:
               only: master
