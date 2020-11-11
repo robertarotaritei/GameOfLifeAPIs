@@ -43,9 +43,11 @@ namespace UserAPI.Controllers
 
         [HttpGet]
         [Route("test")]
-        public async Task<int> Test()
+        public IActionResult Test()
         {
-            return 5;
+            string test = "test";
+
+            return new OkObjectResult(test);
         }
 
         // GET credentials/user/verifyusername?username=bob
