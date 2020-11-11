@@ -23,7 +23,7 @@ jobs:
           paths:
             - C:\Users\circleci\.nuget\packages
           key: dotnet-packages-v1-{{ checksum "ActiveGamesAPI/ActiveGamesAPI/ActiveGamesAPI.csproj" }}
-      - run: cd ActiveGamesAPI; dotnet build --configuration Release
+      - run: cd ActiveGamesAPI;  dotnet build --configuration Release
       - run: cd ActiveGamesAPI; dotnet test -v n --results-directory:test_results --collect:"Code Coverage"
       - store_artifacts:
           path: ActiveGamesAPI
@@ -94,7 +94,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-            cd UserAPI && docker build -t $USER_NAME:latest .
+            cd UserAPI && cd UserAPI && docker build -t $USER_NAME:latest .
       - run: docker save -o image.tar $USER_NAME
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
