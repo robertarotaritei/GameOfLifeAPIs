@@ -15,9 +15,9 @@ FROM build AS publish
 RUN dotnet publish "UserAPI.csproj" -c Release -o /app/publish
 
 FROM base AS final
+ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS=http://+:3001
-ENV ASPNETCORE_URLS=https://+:5001
-EXPOSE 3001 5001
+EXPOSE 3001
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "UserAPI.dll"]
