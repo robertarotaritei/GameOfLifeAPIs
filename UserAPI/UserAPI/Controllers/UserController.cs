@@ -41,6 +41,13 @@ namespace UserAPI.Controllers
             return new OkObjectResult(result);
         }
 
+        [HttpGet]
+        [Route("test")]
+        public async Task<int> Test()
+        {
+            return 5;
+        }
+
         // GET credentials/user/verifyusername?username=bob
         [HttpGet]
         [Route("verifyusername")]
