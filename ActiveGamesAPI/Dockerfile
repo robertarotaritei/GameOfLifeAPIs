@@ -17,6 +17,9 @@ FROM build AS publish
 RUN dotnet publish "ActiveGamesAPI.csproj" -c Release -o /app/publish
 
 FROM base AS final
+ENV ASPNETCORE_URLS=http://+:3002
+ENV ASPNETCORE_URLS=https://+:5002
+EXPOSE 3002 5002
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ActiveGamesAPI.dll"]

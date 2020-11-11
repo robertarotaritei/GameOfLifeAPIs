@@ -17,6 +17,9 @@ FROM build AS publish
 RUN dotnet publish "GameHistoryAPI.csproj" -c Release -o /app/publish
 
 FROM base AS final
+ENV ASPNETCORE_URLS=http://+:3003
+ENV ASPNETCORE_URLS=https://+:5003
+EXPOSE 3003 5003
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "GameHistoryAPI.dll"]
