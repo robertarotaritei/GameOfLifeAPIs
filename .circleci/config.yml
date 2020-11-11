@@ -94,7 +94,7 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: |
-            cd UserAPI && cd UserAPI && docker build -t $USER_NAME:latest .
+            cd UserAPI && docker build -t $USER_NAME:latest .
       - run: docker save -o image.tar $USER_NAME
       - run: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
