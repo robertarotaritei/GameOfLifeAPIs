@@ -4,8 +4,8 @@ executors:
   docker-publisher:
     environment:
       ACTIVE_GAMES_NAME: robertaro/game-of-life-active-games-api
-      GAME_HISTORY_NAME: robertaro/gameof-life-game-history-api
-      USER_NAME: robertaro/gameof-life-user-api
+      GAME_HISTORY_NAME: robertaro/game-of-life-game-history-api
+      USER_NAME: robertaro/game-of-life-user-api
     docker:
       - image: circleci/buildpack-deps:stretch
 
