@@ -7,10 +7,15 @@ namespace ActiveGamesAPI.Infrastructure
 {
     public class SignalRGameProgressBroadcaster : IGameProgressBroadcaster
     {
+        readonly string BaseUrl;
+        public SignalRGameProgressBroadcaster(string url)
+        {
+            BaseUrl = url;
+        }
+
         private async Task<HubConnection> OpenConnectionAsync()
         {
-            var baseUrl = "http://localhost:3002";
-            var connection = new HubConnectionBuilder().WithUrl(baseUrl + "/Progress").Build();
+            var connection = new HubConnectionBuilder().WithUrl(BaseUrl + "/Progress").Build();
             await connection.StartAsync();
 
             return connection;

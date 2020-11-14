@@ -22,7 +22,7 @@ namespace ActiveGamesAPI
         {
             services.AddSignalR();
             services.AddControllers();
-            services.AddTransient<IGameProgressBroadcaster, SignalRGameProgressBroadcaster>();
+            services.AddTransient<IGameProgressBroadcaster, SignalRGameProgressBroadcaster>(_ => new SignalRGameProgressBroadcaster(Configuration["BaseURL"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
