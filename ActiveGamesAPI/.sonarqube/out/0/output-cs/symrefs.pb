@@ -41,23 +41,26 @@ aD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Infrastructure\IGameProg
 
 
 
-/ ;œ
+/ ;˚
 gD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Infrastructure\SignalRGameProgressBroadcaster.cs
 
  /
 
 
-* =/ B/ B
- @ G
-   
+  @ G
 
-% 4
-? KR ^ 
- & 
+ -
+5 8 
+* =/ B""/ B
+   
 
-% 1
-< HO [   
- & à
+% 4
+? KR ^ 
+ & 
+
+  % 1
+  < H##O [%% 
+"" &## à
 JD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Models\GameState.cs
 
  
@@ -68,30 +71,31 @@ JD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Models\GameState.cs
 
  (
 
-		 ≥
+		 ø
 AD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Program.cs
 
  
 
- 
-) -
-
- "
-# 4
-
- 
-> B& *
-* 4 È
+ 
+
+ 
+) - "
+# 4 
+> B& *
+* 4 Å
 AD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Startup.cs
 
  
 
  
-& 3 )
+& 3 ) 
  + 
+Ñ ë
 
  %(
 9 A   
+
+\ ]
 
  F
 2 5!! $$ && // 11 33 

@@ -289,7 +289,7 @@ aD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Infrastructure\IGameProg
 
 < =
 } 
-} ﬂ
+} º
 gD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Infrastructure\SignalRGameProgressBroadcaster.cs
 	namespace 	
 ActiveGamesAPI
@@ -303,162 +303,163 @@ gD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Infrastructure\SignalRGa
 SignalRGameProgressBroadcaster /
 :0 1$
 IGameProgressBroadcaster2 J
-{		 
-private
+{		 
+readonly
 
- 
-async
+ 
+string
 
- 
-Task
+ 
+BaseUrl
 
- 
-<
+ 
+;
 
- 
-HubConnection
-
- (
->
-
-( )
-OpenConnectionAsync
-
-* =
-(
-
-= >
-)
-
-> ?
-{ 	
-var 
-baseUrl 
-= 
-$str 1
-;1 2
-var 
+  
+public *
+SignalRGameProgressBroadcaster -
+(- .
+string. 4
+url5 8
+)8 9
+{ 	
+BaseUrl 
+= 
+url 
+; 
+} 	
+private 
+async 
+Task 
+< 
+HubConnection (
+>( )
+OpenConnectionAsync* =
+(= >
+)> ?
+{ 	
+var 
 
-connection 
-= 
-new   
-HubConnectionBuilder! 5
-(5 6
-)6 7
-.7 8
-WithUrl8 ?
-(? @
-baseUrl@ G
-+H I
-$strJ U
-)U V
-.V W
-BuildW \
-(\ ]
-)] ^
-;^ _
-await 
+connection 
+= 
+new   
+HubConnectionBuilder! 5
+(5 6
+)6 7
+.7 8
+WithUrl8 ?
+(? @
+BaseUrl@ G
++H I
+$strJ U
+)U V
+.V W
+BuildW \
+(\ ]
+)] ^
+;^ _
+await 
 
-connection 
-. 
+connection 
+. 
 
-StartAsync '
-(' (
-)( )
-;) *
-return 
+StartAsync '
+(' (
+)( )
+;) *
+return 
 
-connection 
-; 
-} 	
-public 
-async 
-Task 
-< 
-	GameState #
-># $
-UpdateGameAsync% 4
-(4 5
-	GameState5 >
-currentState? K
-)K L
-{ 	
-await 
-using 
-var 
+connection 
+; 
+} 	
+public 
+async 
+Task 
+< 
+	GameState #
+># $
+UpdateGameAsync% 4
+(4 5
+	GameState5 >
+currentState? K
+)K L
+{ 	
+await 
+using 
+var 
 
-connection &
-=' (
-await) .
-OpenConnectionAsync/ B
-(B C
-)C D
-;D E
-await 
+connection &
+=' (
+await) .
+OpenConnectionAsync/ B
+(B C
+)C D
+;D E
+await 
 
-connection 
-. 
-InvokeAsync (
-(( )
-nameof) /
-(/ 0
-GameProgressHub0 ?
-.? @
-UpdateGameAsync@ O
-)O P
-,P Q
-currentStateR ^
-)^ _
-;_ `
-return 
-currentState 
-;  
-} 	
-public 
-async 
-Task 
-< 
-	GameState #
-># $
-RunGameAsync% 1
-(1 2
-	GameState2 ;
-initialState< H
-)H I
-{ 	
-await 
-using 
-var 
+connection 
+. 
+InvokeAsync (
+(( )
+nameof) /
+(/ 0
+GameProgressHub0 ?
+.? @
+UpdateGameAsync@ O
+)O P
+,P Q
+currentStateR ^
+)^ _
+;_ `
+return 
+currentState 
+;  
+} 	
+public   
+async   
+Task   
+<   
+	GameState   #
+>  # $
+RunGameAsync  % 1
+(  1 2
+	GameState  2 ;
+initialState  < H
+)  H I
+{!! 	
+await"" 
+using"" 
+var"" 
 
-connection &
-=' (
-await) .
-OpenConnectionAsync/ B
-(B C
-)C D
-;D E
-await 
+connection"" &
+=""' (
+await"") .
+OpenConnectionAsync""/ B
+(""B C
+)""C D
+;""D E
+await## 
 
-connection 
-. 
-InvokeAsync (
-(( )
-nameof) /
-(/ 0
-GameProgressHub0 ?
-.? @
-RunGameAsync@ L
-)L M
-,M N
-initialStateO [
-)[ \
-;\ ]
-return   
-initialState   
-;    
-}!! 	
-}"" 
-}## †
+connection## 
+.## 
+InvokeAsync## (
+(##( )
+nameof##) /
+(##/ 0
+GameProgressHub##0 ?
+.##? @
+RunGameAsync##@ L
+)##L M
+,##M N
+initialState##O [
+)##[ \
+;##\ ]
+return%% 
+initialState%% 
+;%%  
+}&& 	
+}'' 
+}(( †
 JD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Models\GameState.cs
 	namespace 	
 ActiveGamesAPI
@@ -512,8 +513,7 @@ Generation "
  	
 } 	
 } 
-} ù
-
+} Ö
 AD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Program.cs
 	namespace 	
 ActiveGamesAPI
@@ -523,98 +523,78 @@ AD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Program.cs
 
 class 
 Program 
-{ 
-public 
-static 
-void 
-Main 
-(  
-string  &
-[& '
-]' (
-args) -
-)- .
-{		 	
-CreateHostBuilder
-
- 
-(
-
- 
-args
-
- "
-)
-
-" #
-.
-
-# $
-Build
-
-$ )
-(
-
-) *
-)
-
-* +
-.
-
-+ ,
-Run
-
-, /
-(
-
-/ 0
-)
-
-0 1
-;
-
-1 2
+{ 
+	protected 
+Program 
+( 
+) 
+{		 	
 } 	
 public 
-static 
-IHostBuilder "
-CreateHostBuilder# 4
-(4 5
-string5 ;
-[; <
-]< =
-args> B
-)B C
-=>D F
-Host 
-.  
-CreateDefaultBuilder %
-(% &
-args& *
-)* +
-. $
-ConfigureWebHostDefaults )
-() *
+static 
+void 
+Main 
+(  
+string  &
+[& '
+]' (
+args) -
+)- .
+{ 	
+CreateHostBuilder 
+( 
+args "
+)" #
+.# $
+Build$ )
+() *
+)* +
+.+ ,
+Run, /
+(/ 0
+)0 1
+;1 2
+} 	
+public 
+static 
+IHostBuilder "
+CreateHostBuilder# 4
+(4 5
+string5 ;
+[; <
+]< =
+args> B
+)B C
+=>D F
+Host 
+.  
+CreateDefaultBuilder %
+(% &
+args& *
+)* +
+. $
+ConfigureWebHostDefaults )
+() *
 
-webBuilder* 4
-=>5 7
-{ 
+webBuilder* 4
+=>5 7
+{ 
 
-webBuilder 
-. 
+webBuilder 
+. 
 
-UseStartup )
-<) *
-Startup* 1
->1 2
-(2 3
-)3 4
-;4 5
-} 
-) 
-; 
-} 
-} ≤
+UseStartup )
+<) *
+Startup* 1
+>1 2
+(2 3
+)3 4
+;4 5
+} 
+) 
+; 
+} 
+} à
 AD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Startup.cs
 	namespace		 	
 ActiveGamesAPI		
@@ -676,8 +656,26 @@ AddSignalR 
 SignalRGameProgressBroadcaster< Z
 >Z [
 ([ \
-)\ ]
-;] ^
+_\ ]
+=>^ `
+newa d+
+SignalRGameProgressBroadcaster	e É
+(
+É Ñ
+Configuration
+Ñ ë
+[
+ë í
+$str
+í õ
+]
+õ ú
+)
+ú ù
+)
+ù û
+;
+û ü
 } 	
 public 
 void 
