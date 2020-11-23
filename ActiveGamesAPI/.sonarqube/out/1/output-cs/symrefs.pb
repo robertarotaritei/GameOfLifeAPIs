@@ -33,4 +33,19 @@ ZD:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI.Tests\ActiveGamesControl
 VV WW XX4 C
 WW" #WW' (
 XX [[ &
-[[ ^^* 0
+[[ ^^* 0À
+ND:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI.Tests\GameState_Test.cs
+
+ 
+
+		 .2
+   # -/ 9
+   "
+
+ 5
+ ##6 =
+    ## "
+
+'' 6
+** 117 ?
+++ .. 11 "

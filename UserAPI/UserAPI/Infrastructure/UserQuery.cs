@@ -21,8 +21,6 @@ namespace UserAPI.Models
 
         public async Task<User> InsertAsync(User body)
         {
-            if (body.Username.Length > 3 && body.Password.Length > 4)
-            {
                 await Db.Connection.OpenAsync();
                 using var cmd = Db.Connection.CreateCommand();
                 cmd.CommandText = Statement.InsertAsync;
@@ -31,9 +29,6 @@ namespace UserAPI.Models
 
                 body.Id = (int)cmd.LastInsertedId;
                 return body;
-            }
-
-            return null;
         }
 
         public async Task<User> UpdateAsync(int id, string password)

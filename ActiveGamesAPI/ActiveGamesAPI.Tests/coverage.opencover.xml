@@ -2,9 +2,9 @@
 <CoverageSession>
   <Summary numSequencePoints="92" visitedSequencePoints="19" numBranchPoints="22" visitedBranchPoints="4" sequenceCoverage="20.65" branchCoverage="18.18" maxCyclomaticComplexity="38" minCyclomaticComplexity="38" visitedClasses="4" numClasses="13" visitedMethods="4" numMethods="21" />
   <Modules>
-    <Module hash="C928B3AB-4BA5-4E62-A813-B59B23BDE482">
+    <Module hash="657DD3B3-3096-4435-A8BC-52C451F05EAE">
       <ModulePath>ActiveGamesAPI.dll</ModulePath>
-      <ModuleTime>2020-11-17T12:16:05</ModuleTime>
+      <ModuleTime>2020-11-23T09:49:47</ModuleTime>
       <ModuleName>ActiveGamesAPI</ModuleName>
       <Files>
         <File uid="1" fullPath="D:\School\GameOfLifeAPIs\ActiveGamesAPI\ActiveGamesAPI\Program.cs" />

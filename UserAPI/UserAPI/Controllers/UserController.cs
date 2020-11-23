@@ -41,15 +41,6 @@ namespace UserAPI.Controllers
             return new OkObjectResult(result);
         }
 
-        [HttpGet]
-        [Route("test")]
-        public IActionResult Test()
-        {
-            string test = "test";
-
-            return new OkObjectResult(test);
-        }
-
         // GET credentials/user/verifyusername?username=bob
         [HttpGet]
         [Route("verifyusername")]
@@ -67,12 +58,14 @@ namespace UserAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User body)
         {
-            var result = await _userQuery.InsertAsync(body);
+            if (body.Username.Length > 3 && body.Password.Length > 4)
+            {
+                await _userQuery.InsertAsync(body);
 
-            if (result is null)
-                return new NotFoundResult();
+                return new OkObjectResult(body);
+            }
 
-            return new OkObjectResult(body);
+            return new NotFoundResult();
         }
 
         // PUT credentials/user/5
