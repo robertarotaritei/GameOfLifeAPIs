@@ -94,7 +94,7 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"SELECT * FROM `user` WHERE `user_name` = @username AND `password` = @password";
+            var expected = @"SELECT * FROM `user` WHERE `user_name` = @username AND `password` = AES_ENCRYPT(@password,'secret');";
 
             //Act
             var result = sqlStatement.VerifyOneAsync;

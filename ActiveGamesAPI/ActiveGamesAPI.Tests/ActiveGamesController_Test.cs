@@ -66,7 +66,7 @@ namespace ActiveGamesAPI.Tests
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
-            activeGamesMock.Setup(x => x.RunGameAsync(gameState)).ReturnsAsync(gameState);
+            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState)).ReturnsAsync(gameState);
             var service = new ActiveGamesController(activeGamesMock.Object);
 
             //Act

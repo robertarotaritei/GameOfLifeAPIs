@@ -177,7 +177,7 @@ namespace UserAPI.Tests
             var service = new UserController(userMock.Object);
 
             //Act
-            var result = await service.DeleteOne(id, returnedUser) as NotFoundResult;
+            var result = await service.DeleteOne(id, new User()) as NotFoundResult;
 
             //Assert
             Assert.IsType<NotFoundResult>(result);
@@ -225,29 +225,6 @@ namespace UserAPI.Tests
         }
 
         [Fact]
-        public async Task VerifyOneAsync_VerifyObject()
-        {
-            //Arrange
-            var user = new User()
-            {
-                Id = 2,
-                Username = "Michael",
-                Password = "qwerty"
-            };
-
-            var userMock = new Mock<IUserQuery>();
-            userMock.Setup(x => x.VerifyOneAsync(user.Username, user.Password)).ReturnsAsync(user);
-            var service = new UserController(userMock.Object);
-
-            //Act
-            var result = await service.VerifyOne(user.Username, user.Password) as OkObjectResult;
-            var actualResult = result.Value;
-
-            //Assert
-            Assert.Equal(user, ((User)actualResult));
-        }
-
-        [Fact]
         public async Task VerifyOneAsync_VerifyInvalidData()
         {
             //Arrange
@@ -289,7 +266,7 @@ namespace UserAPI.Tests
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(user, ((User)actualResult));
+            Assert.Equal(user.Username, actualResult);
         }
 
         [Fact]
