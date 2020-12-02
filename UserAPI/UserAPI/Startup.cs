@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using UserAPI.Controllers;
 using UserAPI.Infrastructure;
 using UserAPI.Models;
 
@@ -33,6 +36,24 @@ namespace UserAPI
 
             services.AddControllers();
             services.AddTransient<IUserQuery, UserQuery>(_ => new UserQuery(Configuration["ConnectionStrings:DefaultConnection"]));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "JwtBearer";
+                options.DefaultChallengeScheme = "JwtBearer";
+            })
+            .AddJwtBearer("JwtBearer", jwtOptions =>
+            {
+                jwtOptions.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = TokenController.SIGNING_KEY,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,6 +63,8 @@ namespace UserAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
 

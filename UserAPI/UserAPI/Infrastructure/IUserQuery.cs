@@ -9,9 +9,13 @@ namespace UserAPI.Infrastructure
 
         Task<User> UpdateAsync(int id, string password);
 
-        Task<User> DeleteAsync(int id);
+        Task<User> UpdateTokenAsync(string username, string password, string token);
+
+        Task<User> DeleteAsync(int id, string password);
 
         Task<User> FindOneAsync(int id);
+
+        Task<string> FindTokenAsync(string username);
 
         Task<User> VerifyOneAsync(string username, string password);
 

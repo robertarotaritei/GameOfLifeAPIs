@@ -10,7 +10,7 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"INSERT INTO `user` (`user_name`, `password`) VALUES (@username, @password);";
+            var expected = @"INSERT INTO `user` (`user_name`, `password`) VALUES (@username, AES_ENCRYPT(@password,'secret'));";
 
             //Act
             var result = sqlStatement.InsertAsync;
@@ -24,10 +24,24 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"UPDATE `user` SET `password` = @password WHERE `id` = @id;";
+            var expected = @"UPDATE `user` SET `password` = AES_ENCRYPT(@password,'secret') WHERE `id` = @id;";
 
             //Act
             var result = sqlStatement.UpdateAsync;
+
+            //Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void SqlStatment_UpdateTokenAsync()
+        {
+            //Arrange
+            var sqlStatement = new SqlStatement();
+            var expected = @"UPDATE `user` SET `token` = @token WHERE `user_name` = @username AND `password` = AES_ENCRYPT(@password,'secret');";
+
+            //Act
+            var result = sqlStatement.UpdateTokenAsync;
 
             //Assert
             Assert.Equal(expected, result);
@@ -38,7 +52,7 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"DELETE FROM `user` WHERE `id` = @id;";
+            var expected = @"DELETE FROM `user` WHERE `id` = @id AND `password` = @password;";
 
             //Act
             var result = sqlStatement.DeleteAsync;
@@ -56,6 +70,20 @@ namespace UserAPI.Tests
 
             //Act
             var result = sqlStatement.FindOneAsync;
+
+            //Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void SqlStatment_FindTokenAsync()
+        {
+            //Arrange
+            var sqlStatement = new SqlStatement();
+            var expected = @"SELECT `token` FROM `user` WHERE `user_name` = @username";
+
+            //Act
+            var result = sqlStatement.FindTokenAsync;
 
             //Assert
             Assert.Equal(expected, result);

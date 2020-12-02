@@ -31,7 +31,9 @@ namespace ActiveGamesAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> RunGame(GameState initialState)
         {
-            var result = await _gameProgressBroadcaster.RunGameAsync(initialState);
+            var calculator = new GameStateCalculator();
+            var nextState = calculator.CalculateNextState(initialState);
+            var result = await _gameProgressBroadcaster.UpdateGameAsync(nextState);
 
             if (result is null)
                 return new NotFoundResult();

@@ -43,11 +43,12 @@ namespace UserAPI.Models
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<User> DeleteAsync(int id)
+        public async Task<User> DeleteAsync(int id, string password)
         {
             var body = await FindOneAsync(id);
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = Statement.DeleteAsync;
+            BindPassword(cmd, password);
             BindId(cmd, id);
             await cmd.ExecuteNonQueryAsync();
 
@@ -65,12 +66,34 @@ namespace UserAPI.Models
             return result.Count > 0 ? result[0] : null;
         }
 
+        public async Task<string> FindTokenAsync(string username)
+        {
+            await Db.Connection.OpenAsync();
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = Statement.FindTokenAsync;
+            BindUsername(cmd, username);
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
+            return result.Count > 0 ? result[0].Token : "";
+        }
+
         public async Task<User> VerifyOneAsync(string username, string password)
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = Statement.VerifyOneAsync;
             BindParams(cmd, username, password);
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+
+            return result.Count > 0 ? result[0] : null;
+        }
+
+        public async Task<User> UpdateTokenAsync(string username, string password, string token)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = Statement.UpdateTokenAsync;
+            BindParams(cmd, username, password);
+            BindToken(cmd, token);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
 
             return result.Count > 0 ? result[0] : null;
@@ -140,6 +163,16 @@ namespace UserAPI.Models
                 ParameterName = "@username",
                 DbType = DbType.String,
                 Value = username,
+            });
+        }
+
+        private void BindToken(MySqlCommand cmd, string token)
+        {
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@token",
+                DbType = DbType.String,
+                Value = token,
             });
         }
 

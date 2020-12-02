@@ -1,5 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using UserAPI.Infrastructure;
 using UserAPI.Models;
 
@@ -9,6 +16,8 @@ namespace UserAPI.Controllers
     [Route("credentials/[controller]")]
     public class UserController
     {
+        private const string SECRET_KEY = "mysuperlongandsecuresecretkey";
+        public static readonly SymmetricSecurityKey SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
         public IUserQuery _userQuery { get; }
 
         public UserController(IUserQuery userQuery)
@@ -18,6 +27,7 @@ namespace UserAPI.Controllers
 
         // GET credentials/user/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetOne(int id)
         {
             var result = await _userQuery.FindOneAsync(id);
@@ -38,7 +48,9 @@ namespace UserAPI.Controllers
             if (result is null)
                 return new NotFoundResult();
 
-            return new OkObjectResult(result);
+            var token = JsonConvert.SerializeObject(GenerateToken(username));
+            await _userQuery.UpdateTokenAsync(username, password, token.Substring(1, token.Length - 2));
+            return new ObjectResult(token);
         }
 
         // GET credentials/user/verifyusername?username=bob
@@ -51,7 +63,20 @@ namespace UserAPI.Controllers
             if (result is null)
                 return new NotFoundResult();
 
-            return new OkObjectResult(result);
+            return new OkObjectResult(result.Username);
+        }
+
+        // GET credentials/user/token?username=bob&token=sfefwfver23r
+        [HttpGet]
+        [Route("token")]
+        public async Task<IActionResult> GetToken(string username, string token)
+        {
+            var result = await _userQuery.FindTokenAsync(username);
+
+            if (result != token || result == "")
+                return new NotFoundResult();
+
+            return new OkObjectResult(true);
         }
 
         // POST credentials/user
@@ -70,9 +95,9 @@ namespace UserAPI.Controllers
 
         // PUT credentials/user/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOne(int id, [FromBody] string password)
+        public async Task<IActionResult> PutOne(int id, [FromBody] User user)
         {
-            var result = await _userQuery.UpdateAsync(id, password);
+            var result = await _userQuery.UpdateAsync(id, user.Password);
 
             if (result is null)
                 return new NotFoundResult();
@@ -82,14 +107,31 @@ namespace UserAPI.Controllers
 
         // DELETE credentials/user/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOne(int id)
+        public async Task<IActionResult> DeleteOne(int id, [FromBody] User user)
         {
-            var result = await _userQuery.DeleteAsync(id);
+            var result = await _userQuery.DeleteAsync(id, user.Password);
 
             if (result is null)
                 return new NotFoundResult();
 
             return new OkObjectResult(result);
+        }
+
+        private object GenerateToken(string username)
+        {
+            var token = new JwtSecurityToken(
+                claims: new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, username)
+
+                },
+                notBefore: new DateTimeOffset(DateTime.Now).DateTime,
+                expires: new DateTimeOffset(DateTime.Now.AddHours(8)).DateTime,
+                signingCredentials: new SigningCredentials(SIGNING_KEY, SecurityAlgorithms.HmacSha256)
+
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
