@@ -12,9 +12,9 @@ namespace GameHistoryAPI.Infrastructure
             var tokenS = handler.ReadToken(token) as JwtSecurityToken;
 
             if (!VerifyJWTClaim(tokenS, author) || tokenS.ValidTo < DateTime.UtcNow)
-                return false;
+                return true;
 
-            return true;
+            return false;
         }
 
         private static bool VerifyJWTClaim(JwtSecurityToken tokenS, string author)

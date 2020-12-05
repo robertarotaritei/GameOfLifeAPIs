@@ -32,6 +32,7 @@ namespace GameHistoryAPI.Models
 
                 return game;
             }
+
             return null;
         }
 
