@@ -17,6 +17,5 @@ namespace GameHistoryAPI
             Connection.Dispose();
             GC.SuppressFinalize(this);
         }
-
     }
 }

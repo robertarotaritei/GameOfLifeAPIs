@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
 using MySqlConnector;
+using Newtonsoft.Json;
 using UserAPI.Infrastructure;
 
 namespace UserAPI.Models
@@ -19,38 +20,52 @@ namespace UserAPI.Models
             Statement = new SqlStatement();
         }
 
-        public async Task<User> InsertAsync(User body)
+        public async Task<User> InsertAsync(User user)
         {
+            if (user.Username.Length > 3 && user.Password.Length > 4)
+            {
                 await Db.Connection.OpenAsync();
                 using var cmd = Db.Connection.CreateCommand();
                 cmd.CommandText = Statement.InsertAsync;
-                BindParams(cmd, body.Username, body.Password);
+                BindParams(cmd, user.Username, user.Password);
                 await cmd.ExecuteNonQueryAsync();
 
-                body.Id = (int)cmd.LastInsertedId;
-                return body;
+                user.Id = (int)cmd.LastInsertedId;
+                return user;
+            }
+
+            return null;
         }
 
-        public async Task<User> UpdateAsync(int id, string password)
+        public async Task<User> UpdateAsync(UserNewPassword user)
         {
-            await Db.Connection.OpenAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = Statement.UpdateAsync;
-            BindPassword(cmd, password);
-            BindId(cmd, id);
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var body = await VerifyOneAsync(user.Username, user.Password);
+            var result = new User();
 
-            return result.Count > 0 ? result[0] : null;
+            if (body != null && TokenGenerator.VerifyJWTToken(body.Token, user.Token))
+            {
+                using var cmd = Db.Connection.CreateCommand();
+                cmd.CommandText = Statement.UpdateAsync;
+                BindParams(cmd, user.Username, user.NewPassword);
+                await cmd.ExecuteNonQueryAsync();
+                result.Username = user.Username;
+                result.Password = user.NewPassword;
+            }
+
+            return result.Username != "" ? result : null;
         }
 
-        public async Task<User> DeleteAsync(int id, string password)
+        public async Task<User> DeleteAsync(User user)
         {
-            var body = await FindOneAsync(id);
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = Statement.DeleteAsync;
-            BindPassword(cmd, password);
-            BindId(cmd, id);
-            await cmd.ExecuteNonQueryAsync();
+            var body = await VerifyOneAsync(user.Username, user.Password);
+
+            if (body != null && TokenGenerator.VerifyJWTToken(body.Token, user.Token))
+            {
+                using var cmd = Db.Connection.CreateCommand();
+                cmd.CommandText = Statement.DeleteAsync;
+                BindParams(cmd, user.Username, user.Password);
+                await cmd.ExecuteNonQueryAsync();
+            }
 
             return body;
         }
@@ -66,7 +81,7 @@ namespace UserAPI.Models
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<string> FindTokenAsync(string username)
+        public async Task<User> FindTokenAsync(string username, string token)
         {
             await Db.Connection.OpenAsync();
             using var cmd = Db.Connection.CreateCommand();
@@ -74,7 +89,14 @@ namespace UserAPI.Models
             BindUsername(cmd, username);
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
 
-            return result.Count > 0 ? result[0].Token : "";
+            var user = result.Count > 0 ? result[0] : null;
+            if(user == null)
+                return null;
+
+            if (!TokenGenerator.VerifyJWTToken(user.Token, token))
+                return null;
+
+            return user;
         }
 
         public async Task<User> VerifyOneAsync(string username, string password)
@@ -88,15 +110,25 @@ namespace UserAPI.Models
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<User> UpdateTokenAsync(string username, string password, string token)
+        public async Task<string> UpdateTokenAsync(string username, string password)
         {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = Statement.UpdateTokenAsync;
-            BindParams(cmd, username, password);
-            BindToken(cmd, token);
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var body = await VerifyOneAsync(username, password);
+            string result = "";
+            
+            if (body != null)
+            {
+                var tokenGenerator = new TokenGenerator(username);
+                var token = JsonConvert.SerializeObject(tokenGenerator.Token);
 
-            return result.Count > 0 ? result[0] : null;
+                using var cmd = Db.Connection.CreateCommand();
+                cmd.CommandText = Statement.UpdateTokenAsync;
+                BindUsername(cmd, username);
+                BindToken(cmd, token);
+                await cmd.ExecuteNonQueryAsync();
+                result = token;
+            }
+
+            return result;
         }
 
         public async Task<User> VerifyUsernameAsync(string username)
@@ -122,6 +154,7 @@ namespace UserAPI.Models
                         Id = reader.GetInt32(0),
                         Username = reader.GetString(1),
                         Password = reader.GetString(2),
+                        Token = reader.GetString(3)
                     };
                     users.Add(user);
                 }
@@ -173,16 +206,6 @@ namespace UserAPI.Models
                 ParameterName = "@token",
                 DbType = DbType.String,
                 Value = token,
-            });
-        }
-
-        private void BindPassword(MySqlCommand cmd, string password)
-        {
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@password",
-                DbType = DbType.String,
-                Value = password,
             });
         }
     }

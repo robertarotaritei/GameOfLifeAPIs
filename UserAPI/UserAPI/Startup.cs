@@ -30,7 +30,7 @@ namespace UserAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:3000");
+                                      builder.WithOrigins("http://reverse-proxy:80");
                                   });
             });
 
@@ -46,7 +46,7 @@ namespace UserAPI
             {
                 jwtOptions.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    IssuerSigningKey = TokenController.SIGNING_KEY,
+                    IssuerSigningKey = TokenGenerator.SIGNING_KEY,
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateIssuerSigningKey = true,

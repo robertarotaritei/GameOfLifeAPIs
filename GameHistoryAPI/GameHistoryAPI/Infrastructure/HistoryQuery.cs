@@ -21,14 +21,18 @@ namespace GameHistoryAPI.Models
 
         public async Task<Game> InsertAsync(Game game)
         {
-            await Db.Connection.OpenAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = Statement.InsertAsync;
-            BindParams(cmd, game.Author, game.InitialState);
-            await cmd.ExecuteNonQueryAsync();
-            game.Id = (int)cmd.LastInsertedId;
+            if (!TokenVerifier.VerifyJWTToken(game.Token, game.Author))
+            {
+                await Db.Connection.OpenAsync();
+                using var cmd = Db.Connection.CreateCommand();
+                cmd.CommandText = Statement.InsertAsync;
+                BindParams(cmd, game.Author, game.InitialState);
+                await cmd.ExecuteNonQueryAsync();
+                game.Id = (int)cmd.LastInsertedId;
 
-            return game;
+                return game;
+            }
+            return null;
         }
 
         public async Task<List<Game>> AllAsync()
@@ -42,25 +46,35 @@ namespace GameHistoryAPI.Models
 
         public async Task<Game> UpdateAsync(int id, Game game)
         {
-            await Db.Connection.OpenAsync();
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = Statement.UpdateAsync;
-            BindParams(cmd, game.InitialState);
-            BindId(cmd, id);
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = new List<Game>();
+
+            if (!TokenVerifier.VerifyJWTToken(game.Token, game.Author))
+            {
+                await Db.Connection.OpenAsync();
+                using var cmd = Db.Connection.CreateCommand();
+                cmd.CommandText = Statement.UpdateAsync;
+                BindParams(cmd, game.InitialState);
+                BindId(cmd, id);
+                result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            }
 
             return result.Count > 0 ? result[0] : null;
         }
 
-        public async Task<Game> DeleteAsync(int id)
+        public async Task<Game> DeleteAsync(Game game)
         {
-            var body = await FindOneAsync(id);
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = Statement.DeleteAsync;
-            BindId(cmd, id);
-            await cmd.ExecuteNonQueryAsync();
+            if (!TokenVerifier.VerifyJWTToken(game.Token, game.Author))
+            {
+                var body = await FindOneAsync(game.Id);
+                using var cmd = Db.Connection.CreateCommand();
+                cmd.CommandText = Statement.DeleteAsync;
+                BindId(cmd, game.Id);
+                await cmd.ExecuteNonQueryAsync();
 
-            return body;
+                return body;
+            }
+
+            return null;
         }
 
         public async Task<Game> FindOneAsync(int id)

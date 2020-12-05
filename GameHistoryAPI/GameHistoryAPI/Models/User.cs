@@ -1,16 +1,16 @@
 ﻿namespace GameHistoryAPI.Models
 {
-    public class Game
+    public class User
     {
         public int Id { get; set; }
 
-        public string Author { get; set; }
+        public string Username { get; set; }
 
-        public string InitialState { get; set; }
+        public string Password { get; set; }
 
         public string Token { get; set; }
 
-        public Game()
+        public User()
         {
 
         }

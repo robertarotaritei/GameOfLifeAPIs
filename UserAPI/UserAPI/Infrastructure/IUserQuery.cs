@@ -5,17 +5,17 @@ namespace UserAPI.Infrastructure
 {
     public interface IUserQuery
     {
-        Task<User> InsertAsync(User body);
+        Task<User> InsertAsync(User user);
 
-        Task<User> UpdateAsync(int id, string password);
+        Task<User> UpdateAsync(UserNewPassword user);
 
-        Task<User> UpdateTokenAsync(string username, string password, string token);
+        Task<string> UpdateTokenAsync(string username, string password);
 
-        Task<User> DeleteAsync(int id, string password);
+        Task<User> DeleteAsync(User user);
 
         Task<User> FindOneAsync(int id);
 
-        Task<string> FindTokenAsync(string username);
+        Task<User> FindTokenAsync(string username, string token);
 
         Task<User> VerifyOneAsync(string username, string password);
 

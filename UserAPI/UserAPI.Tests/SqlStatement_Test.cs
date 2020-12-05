@@ -24,7 +24,7 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"UPDATE `user` SET `password` = AES_ENCRYPT(@password,'secret') WHERE `id` = @id;";
+            var expected = @"UPDATE `user` SET `password` = AES_ENCRYPT(@password,'secret') WHERE `user_name` = @username;";
 
             //Act
             var result = sqlStatement.UpdateAsync;
@@ -38,7 +38,7 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"UPDATE `user` SET `token` = @token WHERE `user_name` = @username AND `password` = AES_ENCRYPT(@password,'secret');";
+            var expected = @"UPDATE `user` SET `token` = @token WHERE `user_name` = @username;";
 
             //Act
             var result = sqlStatement.UpdateTokenAsync;
@@ -52,7 +52,7 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"DELETE FROM `user` WHERE `id` = @id AND `password` = @password;";
+            var expected = @"DELETE FROM `user` WHERE `user_name` = @username AND `password` = @password;";
 
             //Act
             var result = sqlStatement.DeleteAsync;
@@ -80,7 +80,7 @@ namespace UserAPI.Tests
         {
             //Arrange
             var sqlStatement = new SqlStatement();
-            var expected = @"SELECT `token` FROM `user` WHERE `user_name` = @username";
+            var expected = @"SELECT * FROM `user` WHERE `user_name` = @username";
 
             //Act
             var result = sqlStatement.FindTokenAsync;

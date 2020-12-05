@@ -5,6 +5,7 @@ using Moq;
 using UserAPI.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using UserAPI.Infrastructure;
+using Newtonsoft.Json;
 
 namespace UserAPI.Tests
 {
@@ -80,41 +81,50 @@ namespace UserAPI.Tests
         public async Task UpdateAsync_VerifyPassword()
         {
             //Arrange
-            var newUserPassword = new User()
+            var newUserPassword = new UserNewPassword()
             {
                 Id = 2,
-                Password = "qwerty"
+                Password = "qwerty",
+                NewPassword = "qwerty2"
+            };
+
+            var newUser = new User()
+            {
+                Id = 2,
+                Password = "qwerty2"
             };
 
             var userMock = new Mock<IUserQuery>();
-            userMock.Setup(x => x.UpdateAsync(newUserPassword.Id, newUserPassword.Password)).ReturnsAsync(newUserPassword);
+            userMock.Setup(x => x.UpdateAsync(newUserPassword)).ReturnsAsync(newUser);
             var service = new UserController(userMock.Object);
 
             //Act
-            var result = await service.PutOne(newUserPassword.Id, newUserPassword) as OkObjectResult;
+            var result = await service.PutOne(newUserPassword) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(newUserPassword.Password, ((User)actualResult).Password);
+            Assert.Equal(newUserPassword.NewPassword, ((User)actualResult).Password);
         }
 
         [Fact]
         public async Task UpdateAsync_VerifyInvalidPassword()
         {
             //Arrange
-            var user = new User()
+            var userNewPassword = new UserNewPassword()
             {
                 Id = 2,
-                Password = ""
+                Password = "",
+                NewPassword = ""
             };
+
             User returnedUser = null;
 
             var userMock = new Mock<IUserQuery>();
-            userMock.Setup(x => x.UpdateAsync(user.Id, user.Password)).ReturnsAsync(returnedUser);
+            userMock.Setup(x => x.UpdateAsync(userNewPassword)).ReturnsAsync(returnedUser);
             var service = new UserController(userMock.Object);
 
             //Act
-            var result = await service.PutOne(user.Id, user) as NotFoundResult;
+            var result = await service.PutOne(userNewPassword) as NotFoundResult;
 
             //Assert
             Assert.IsType<NotFoundResult>(result);
@@ -124,19 +134,21 @@ namespace UserAPI.Tests
         public async Task UpdateAsync_VerifyInvalidId()
         {
             //Arrange
-            var user = new User()
+            var userNewPassword = new UserNewPassword()
             {
-                Id = 0,
-                Password = "password"
+                Id = 2,
+                Password = "password",
+                NewPassword = "password"
             };
+
             User returnedUser = null;
 
             var userMock = new Mock<IUserQuery>();
-            userMock.Setup(x => x.UpdateAsync(user.Id, user.Password)).ReturnsAsync(returnedUser);
+            userMock.Setup(x => x.UpdateAsync(userNewPassword)).ReturnsAsync(returnedUser);
             var service = new UserController(userMock.Object);
 
             //Act
-            var result = await service.PutOne(user.Id, user) as NotFoundResult;
+            var result = await service.PutOne(userNewPassword) as NotFoundResult;
 
             //Assert
             Assert.IsType<NotFoundResult>(result);
@@ -146,19 +158,22 @@ namespace UserAPI.Tests
         public async Task DeleteAsync_VerifyObject()
         {
             //Arrange
+            var tokenGenerator = new TokenGenerator("Michael");
+            var token = JsonConvert.SerializeObject(tokenGenerator.Token);
             var user = new User()
             {
                 Id = 2,
                 Username = "Michael",
-                Password = "qwerty"
+                Password = "qwerty",
+                Token = token
             };
 
             var userMock = new Mock<IUserQuery>();
-            userMock.Setup(x => x.DeleteAsync(user.Id, user.Password)).ReturnsAsync(user);
+            userMock.Setup(x => x.DeleteAsync(user)).ReturnsAsync(user);
             var service = new UserController(userMock.Object);
 
             //Act
-            var result = await service.DeleteOne(user.Id, user) as OkObjectResult;
+            var result = await service.DeleteOne(user) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
@@ -170,14 +185,19 @@ namespace UserAPI.Tests
         {
             //Arrange
             User returnedUser = null;
-            int id = 0;
+            var user = new User()
+            {
+                Id = 0,
+                Username = "Michael",
+                Password = "qwerty"
+            };
 
             var userMock = new Mock<IUserQuery>();
-            userMock.Setup(x => x.DeleteAsync(id, "")).ReturnsAsync(returnedUser);
+            userMock.Setup(x => x.DeleteAsync(user)).ReturnsAsync(returnedUser);
             var service = new UserController(userMock.Object);
 
             //Act
-            var result = await service.DeleteOne(id, new User()) as NotFoundResult;
+            var result = await service.DeleteOne(user) as NotFoundResult;
 
             //Assert
             Assert.IsType<NotFoundResult>(result);
@@ -233,10 +253,9 @@ namespace UserAPI.Tests
                 Username = "Michael",
                 Password = "qwerty"
             };
-            User returnedUser = null;
 
             var userMock = new Mock<IUserQuery>();
-            userMock.Setup(x => x.VerifyOneAsync(user.Username, user.Password)).ReturnsAsync(returnedUser);
+            userMock.Setup(x => x.UpdateTokenAsync(user.Username, user.Password)).ReturnsAsync("");
             var service = new UserController(userMock.Object);
 
             //Act

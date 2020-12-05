@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using GameHistoryAPI.Infrastructure;
+using System.IdentityModel.Tokens.Jwt;
+using System;
+using System.Security.Claims;
 
 namespace GameHistoryAPI.Controllers
 {
@@ -66,15 +69,14 @@ namespace GameHistoryAPI.Controllers
 
         // DELETE "history/gamehistory/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOne(int id)
+        public async Task<IActionResult> DeleteOne([FromBody] Game body)
         {
-            var result = await _historyQuery.DeleteAsync(id);
+            var result = await _historyQuery.DeleteAsync(body);
 
             if (result is null)
                 return new NotFoundResult();
 
             return new OkObjectResult(result);
         }
-
     }
 }

@@ -1,12 +1,6 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using UserAPI.Infrastructure;
 using UserAPI.Models;
 
@@ -16,8 +10,6 @@ namespace UserAPI.Controllers
     [Route("credentials/[controller]")]
     public class UserController
     {
-        private const string SECRET_KEY = "mysuperlongandsecuresecretkey";
-        public static readonly SymmetricSecurityKey SIGNING_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
         public IUserQuery _userQuery { get; }
 
         public UserController(IUserQuery userQuery)
@@ -43,14 +35,12 @@ namespace UserAPI.Controllers
         [Route("verify")]
         public async Task<IActionResult> VerifyOne(string username, string password)
         {
-            var result = await _userQuery.VerifyOneAsync(username, password);
+            var result = await _userQuery.UpdateTokenAsync(username, password);
 
-            if (result is null)
+            if (result is "")
                 return new NotFoundResult();
 
-            var token = JsonConvert.SerializeObject(GenerateToken(username));
-            await _userQuery.UpdateTokenAsync(username, password, token.Substring(1, token.Length - 2));
-            return new ObjectResult(token);
+            return new ObjectResult(result);
         }
 
         // GET credentials/user/verifyusername?username=bob
@@ -69,35 +59,33 @@ namespace UserAPI.Controllers
         // GET credentials/user/token?username=bob&token=sfefwfver23r
         [HttpGet]
         [Route("token")]
-        public async Task<IActionResult> GetToken(string username, string token)
+        public async Task<bool> GetToken(string username, string token)
         {
-            var result = await _userQuery.FindTokenAsync(username);
+            var result = await _userQuery.FindTokenAsync(username, token);
 
-            if (result != token || result == "")
-                return new NotFoundResult();
+            if(result is null)
+                return false;
 
-            return new OkObjectResult(true);
+            return true;
         }
 
         // POST credentials/user
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] User body)
+        public async Task<IActionResult> Post([FromBody] User user)
         {
-            if (body.Username.Length > 3 && body.Password.Length > 4)
-            {
-                await _userQuery.InsertAsync(body);
+            var result = await _userQuery.InsertAsync(user);
 
-                return new OkObjectResult(body);
-            }
+            if (result is null)
+                return new NotFoundResult();
 
-            return new NotFoundResult();
+            return new OkObjectResult(user);
         }
 
         // PUT credentials/user/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOne(int id, [FromBody] User user)
-        {
-            var result = await _userQuery.UpdateAsync(id, user.Password);
+        public async Task<IActionResult> PutOne([FromBody] UserNewPassword user)
+        {            
+            var result = await _userQuery.UpdateAsync(user);
 
             if (result is null)
                 return new NotFoundResult();
@@ -107,31 +95,14 @@ namespace UserAPI.Controllers
 
         // DELETE credentials/user/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOne(int id, [FromBody] User user)
+        public async Task<IActionResult> DeleteOne([FromBody] User user)
         {
-            var result = await _userQuery.DeleteAsync(id, user.Password);
+            var result = await _userQuery.DeleteAsync(user);
 
             if (result is null)
                 return new NotFoundResult();
 
             return new OkObjectResult(result);
-        }
-
-        private object GenerateToken(string username)
-        {
-            var token = new JwtSecurityToken(
-                claims: new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, username)
-
-                },
-                notBefore: new DateTimeOffset(DateTime.Now).DateTime,
-                expires: new DateTimeOffset(DateTime.Now.AddHours(8)).DateTime,
-                signingCredentials: new SigningCredentials(SIGNING_KEY, SecurityAlgorithms.HmacSha256)
-
-                );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

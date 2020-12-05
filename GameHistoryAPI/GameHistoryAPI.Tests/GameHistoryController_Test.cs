@@ -189,11 +189,11 @@ namespace GameHistoryAPI.Tests
             };
 
             var userMock = new Mock<IHistoryQuery>();
-            userMock.Setup(x => x.DeleteAsync(game.Id)).ReturnsAsync(game);
+            userMock.Setup(x => x.DeleteAsync(game)).ReturnsAsync(game);
             var service = new GameHistoryController(userMock.Object);
 
             //Act
-            var result = await service.DeleteOne(game.Id) as OkObjectResult;
+            var result = await service.DeleteOne(game) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
@@ -204,15 +204,20 @@ namespace GameHistoryAPI.Tests
         public async Task DeleteAsync_VerifyInvalidId()
         {
             //Arrange
-            var id = 0;
+            var game = new Game()
+            {
+                Id = 0,
+                Author = "Michael",
+                InitialState = "[[true,false],[false,false]]"
+            };
             Game returnedGame = null;
 
             var userMock = new Mock<IHistoryQuery>();
-            userMock.Setup(x => x.DeleteAsync(id)).ReturnsAsync(returnedGame);
+            userMock.Setup(x => x.DeleteAsync(game)).ReturnsAsync(returnedGame);
             var service = new GameHistoryController(userMock.Object);
 
             //Act
-            var result = await service.DeleteOne(id) as NotFoundResult;
+            var result = await service.DeleteOne(game) as NotFoundResult;
 
             //Assert
             Assert.IsType<NotFoundResult>(result);
