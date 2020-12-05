@@ -27,7 +27,7 @@ namespace GameHistoryAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://reverse-proxy:80");
+                                      builder.WithOrigins("https://gameoflifeapp.azurewebsites.net");
                                   });
             });
             services.AddControllers();
