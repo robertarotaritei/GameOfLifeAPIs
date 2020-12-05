@@ -30,7 +30,7 @@ namespace UserAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("https://gameoflifeapp.azurewebsites.net");
+                                      builder.WithOrigins("http://localhost:3000");
                                   });
             });
 
