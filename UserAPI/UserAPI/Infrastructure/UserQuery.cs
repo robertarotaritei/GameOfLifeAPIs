@@ -24,6 +24,7 @@ namespace UserAPI.Models
         {
             if (user.Username.Length > 3 && user.Password.Length > 4)
             {
+                user.Token = "token";
                 await Db.Connection.OpenAsync();
                 using var cmd = Db.Connection.CreateCommand();
                 cmd.CommandText = Statement.InsertAsync;
@@ -59,7 +60,7 @@ namespace UserAPI.Models
         {
             var body = await VerifyOneAsync(user.Username, user.Password);
 
-            if (body != null && TokenGenerator.VerifyJWTToken(body.Token, user.Token))
+            if (body != null && TokenGenerator.VerifyJWTToken(body.Token.Substring(1).Substring(0, body.Token.Length - 2), user.Token))
             {
                 using var cmd = Db.Connection.CreateCommand();
                 cmd.CommandText = Statement.DeleteAsync;
@@ -93,7 +94,7 @@ namespace UserAPI.Models
             if(user == null)
                 return null;
 
-            if (!TokenGenerator.VerifyJWTToken(user.Token, token))
+            if (!TokenGenerator.VerifyJWTToken(user.Token.Substring(1).Substring(0, user.Token.Length - 2), token))
                 return null;
 
             return user;
