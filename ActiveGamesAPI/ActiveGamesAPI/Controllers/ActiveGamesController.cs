@@ -18,9 +18,9 @@ namespace ActiveGamesAPI.Controllers
 
         [HttpPost]
         [Route("update")]
-        public async Task<IActionResult> UpdateGame(GameState nextState)
+        public async Task<IActionResult> UpdateGame(GameInfo gameInfo)
         {
-            var result = await _gameProgressBroadcaster.UpdateGameAsync(nextState);
+            var result = await _gameProgressBroadcaster.SendGameInfo(gameInfo);
 
             if (result is null)
                 return new NotFoundResult();
@@ -31,9 +31,7 @@ namespace ActiveGamesAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> RunGame(GameState initialState)
         {
-            var calculator = new GameStateCalculator();
-            var nextState = calculator.CalculateNextState(initialState);
-            var result = await _gameProgressBroadcaster.UpdateGameAsync(nextState);
+            var result = await _gameProgressBroadcaster.RunGameAsync(initialState);
 
             if (result is null)
                 return new NotFoundResult();

@@ -2,9 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using GameHistoryAPI.Infrastructure;
-using System.IdentityModel.Tokens.Jwt;
-using System;
-using System.Security.Claims;
 
 namespace GameHistoryAPI.Controllers
 {

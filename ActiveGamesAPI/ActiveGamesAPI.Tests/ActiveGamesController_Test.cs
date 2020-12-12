@@ -14,40 +14,35 @@ namespace ActiveGamesAPI.Tests
         public async Task UpdateGame_VerifyObject()
         {
             //Arrange
-            var generation = new bool[2][];
-            generation[0] = new bool[2] { true, false };
-            generation[1] = new bool[2] { false, false };
-            var gameState = new GameState()
+            var gameInfo = new GameInfo()
             {
-                Generation = generation,
-                ReactConnectionId = "",
-                RunnerConnectionId = ""
+                Info = "Success"
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
-            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState)).ReturnsAsync(gameState);
+            activeGamesMock.Setup(x => x.SendGameInfo(gameInfo)).ReturnsAsync(gameInfo);
             var service = new ActiveGamesController(activeGamesMock.Object);
 
             //Act
-            var result = await service.UpdateGame(gameState) as OkObjectResult;
+            var result = await service.UpdateGame(gameInfo) as OkObjectResult;
             var actualResult = result.Value;
 
             //Assert
-            Assert.Equal(gameState, actualResult);
+            Assert.Equal(gameInfo, actualResult);
         }
 
         [Fact]
         public async Task UpdateGame_VerifyInvalidObject()
         {
             //Arrange
-            GameState gameState = null;
+            GameInfo gameInfo = null;
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
-            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState)).ReturnsAsync(gameState);
+            activeGamesMock.Setup(x => x.SendGameInfo(gameInfo)).ReturnsAsync(gameInfo);
             var service = new ActiveGamesController(activeGamesMock.Object);
 
             //Act
-            var result = await service.UpdateGame(gameState) as NotFoundResult;
+            var result = await service.UpdateGame(gameInfo) as NotFoundResult;
 
             //Assert
             Assert.IsType<NotFoundResult>(result);
@@ -63,10 +58,12 @@ namespace ActiveGamesAPI.Tests
             var gameState = new GameState()
             {
                 Generation = generation,
+                ReactConnectionId = "",
+                RunnerConnectionId = ""
             };
 
             var activeGamesMock = new Mock<IGameProgressBroadcaster>();
-            activeGamesMock.Setup(x => x.UpdateGameAsync(gameState)).ReturnsAsync(gameState);
+            activeGamesMock.Setup(x => x.RunGameAsync(gameState)).ReturnsAsync(gameState);
             var service = new ActiveGamesController(activeGamesMock.Object);
 
             //Act

@@ -6,10 +6,9 @@ namespace ActiveGamesAPI.Hubs
 {
     public class GameProgressHub: Hub
     {
-        public async Task UpdateGameAsync(GameState currentState)
+        public async Task SendGameInfo(GameInfo gameInfo)
         {
-            currentState.RunnerConnectionId = Context.ConnectionId;
-            await Clients.Clients(currentState.ReactConnectionId).SendAsync("GameProgressed", currentState);
+            await Clients.Clients(gameInfo.ReactConnectionId).SendAsync("GameInfoSent", gameInfo.Info);
         }
 
         public async Task RunGameAsync(GameState initialState)

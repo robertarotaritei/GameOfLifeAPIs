@@ -5,7 +5,7 @@ namespace ActiveGamesAPI.Infrastructure
 {
     public interface IGameProgressBroadcaster
     {
-        Task<GameState> UpdateGameAsync(GameState currentState);
+        Task<GameInfo> SendGameInfo(GameInfo gameInfo);
 
         Task<GameState> RunGameAsync(GameState initialState);
     }

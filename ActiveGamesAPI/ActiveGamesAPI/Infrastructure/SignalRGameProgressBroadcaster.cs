@@ -21,12 +21,12 @@ namespace ActiveGamesAPI.Infrastructure
             return connection;
         }
 
-        public async Task<GameState> UpdateGameAsync(GameState currentState)
+        public async Task<GameInfo> SendGameInfo(GameInfo gameInfo)
         {
             await using var connection = await OpenConnectionAsync();
-            await connection.InvokeAsync(nameof(GameProgressHub.UpdateGameAsync), currentState);
+            await connection.InvokeAsync(nameof(GameProgressHub.SendGameInfo), gameInfo);
 
-            return currentState;
+            return gameInfo;
         }
 
         public async Task<GameState> RunGameAsync(GameState initialState)
