@@ -11,11 +11,6 @@ namespace ActiveGamesAPI.Hubs
             await Clients.Clients(gameInfo.ReactConnectionId).SendAsync("GameInfoSent", gameInfo.Info);
         }
 
-        public async Task RunGameAsync(GameState initialState)
-        {
-            await Clients.AllExcept(initialState.ReactConnectionId).SendAsync("GameInitiated", initialState);
-        }
-
         public string GetConnectionId() => Context.ConnectionId;
     }
 }

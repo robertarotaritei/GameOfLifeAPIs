@@ -10,28 +10,18 @@ namespace ActiveGamesAPI.Controllers
     public class ActiveGamesController
     {
         private readonly IGameProgressBroadcaster _gameProgressBroadcaster;
+        private GameStateCalculator Calculator;
 
         public ActiveGamesController(IGameProgressBroadcaster gameProgressBroadcaster)
         {
             _gameProgressBroadcaster = gameProgressBroadcaster;
-        }
-
-        [HttpPost]
-        [Route("update")]
-        public async Task<IActionResult> UpdateGame(GameInfo gameInfo)
-        {
-            var result = await _gameProgressBroadcaster.SendGameInfo(gameInfo);
-
-            if (result is null)
-                return new NotFoundResult();
-
-            return new OkObjectResult(result);
+            Calculator = new GameStateCalculator();
         }
 
         [HttpPost]
         public async Task<IActionResult> RunGame(GameState initialState)
         {
-            var result = await _gameProgressBroadcaster.RunGameAsync(initialState);
+            var result = await _gameProgressBroadcaster.SendGameInfo(initialState);
 
             if (result is null)
                 return new NotFoundResult();
