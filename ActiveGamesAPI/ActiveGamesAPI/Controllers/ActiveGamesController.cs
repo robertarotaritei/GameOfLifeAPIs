@@ -10,12 +10,10 @@ namespace ActiveGamesAPI.Controllers
     public class ActiveGamesController
     {
         private readonly IGameProgressBroadcaster _gameProgressBroadcaster;
-        private GameStateCalculator Calculator;
 
         public ActiveGamesController(IGameProgressBroadcaster gameProgressBroadcaster)
         {
             _gameProgressBroadcaster = gameProgressBroadcaster;
-            Calculator = new GameStateCalculator();
         }
 
         [HttpPost]
